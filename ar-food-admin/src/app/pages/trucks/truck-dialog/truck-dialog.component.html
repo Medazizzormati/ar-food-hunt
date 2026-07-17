@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Food Truck' : 'Register New Truck' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Truck Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g. Burger Bliss">
+    </mat-form-field>
+
+    <div style="display: flex; gap: 16px;">
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Owner Name</mat-label>
+        <input matInput formControlName="owner" placeholder="E.g. Mike T.">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option value="American">American</mat-option>
+          <mat-option value="Italian">Italian</mat-option>
+          <mat-option value="Mexican">Mexican</mat-option>
+          <mat-option value="Vegan">Vegan</mat-option>
+          <mat-option value="Dessert">Dessert</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" placeholder="E.g. Central Park">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Active">Active</mat-option>
+        <mat-option value="Suspended">Suspended</mat-option>
+        <mat-option value="Pending Approval">Pending Approval</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="save()">
+    {{ isEditMode ? 'Save Changes' : 'Register Truck' }}
+  </button>
+</mat-dialog-actions>

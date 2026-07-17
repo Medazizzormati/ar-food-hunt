@@ -1,0 +1,53 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>Rewards & Coupons</h1>
+      <p class="text-muted">Manage redeemable items from player points.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openRewardDialog()">
+        <span class="material-symbols-rounded">loyalty</span> Create Reward
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reward Name</th>
+            <th>Point Cost</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reward of rewards">
+            <td><span class="fw-600">{{ reward.name }}</span></td>
+            <td><span class="badge badge-purple">{{ reward.cost }} pts</span></td>
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'badge-success': reward.status === 'Active', 
+                      'badge-danger': reward.status === 'Inactive'
+                    }">
+                {{ reward.status }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-sm">
+                <button class="btn-icon" (click)="openRewardDialog(reward)">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="btn-icon" (click)="deleteReward(reward.id)" style="color: var(--color-danger)">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

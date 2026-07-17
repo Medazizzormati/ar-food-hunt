@@ -1,0 +1,469 @@
+<!-- HOME PAGE: Full-width responsive dashboard -->
+<div class="page animate-in">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Welcome back, <span class="text-gradient">Explorer!</span> 👋</h1>
+      <p class="text-muted">Ready for your next food adventure? Here's your daily overview.</p>
+    </div>
+    <div class="page-header-right">
+      <a routerLink="/hunt" class="btn btn-primary">
+        <span class="material-symbols-rounded">camera</span>
+        Start Hunt
+      </a>
+      <a routerLink="/explore" class="btn btn-secondary">
+        <span class="material-symbols-rounded">map</span>
+        Explore Map
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== STAT CARDS ===== -->
+  <div class="grid-4 mb-xl">
+    <div class="stat-card accent-orange animate-in">
+      <div class="stat-card-top">
+        <div class="stat-icon orange">
+          <span class="material-symbols-rounded">star</span>
+        </div>
+        <span class="stat-change positive">
+          <span class="material-symbols-rounded">trending_up</span> +12%
+        </span>
+      </div>
+      <div class="stat-value">850 XP</div>
+      <div class="stat-label">Total Experience</div>
+      <div class="progress-bar-track" style="margin-top:8px">
+        <div class="progress-bar-fill" style="width:85%"></div>
+      </div>
+      <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">150 XP to Level 5</div>
+    </div>
+
+    <div class="stat-card accent-purple animate-in">
+      <div class="stat-card-top">
+        <div class="stat-icon purple">
+          <span class="material-symbols-rounded">monetization_on</span>
+        </div>
+        <span class="stat-change positive">
+          <span class="material-symbols-rounded">trending_up</span> +8%
+        </span>
+      </div>
+      <div class="stat-value">1,250</div>
+      <div class="stat-label">Coins Earned</div>
+    </div>
+
+    <div class="stat-card accent-teal animate-in">
+      <div class="stat-card-top">
+        <div class="stat-icon teal">
+          <span class="material-symbols-rounded">inventory_2</span>
+        </div>
+        <span class="stat-change positive">
+          <span class="material-symbols-rounded">trending_up</span> +5 today
+        </span>
+      </div>
+      <div class="stat-value">24</div>
+      <div class="stat-label">Items Collected</div>
+    </div>
+
+    <div class="stat-card accent-success animate-in">
+      <div class="stat-card-top">
+        <div class="stat-icon success">
+          <span class="material-symbols-rounded">storefront</span>
+        </div>
+        <span class="stat-change positive">
+          <span class="material-symbols-rounded">trending_up</span> 3 new
+        </span>
+      </div>
+      <div class="stat-value">12</div>
+      <div class="stat-label">Trucks Visited</div>
+    </div>
+  </div>
+
+  <!-- ===== EVENT BANNER + MISSIONS ===== -->
+  <div class="grid-2 mb-xl">
+
+    <!-- Event Banner -->
+    <div class="event-banner card animate-in">
+      <div class="event-bg"></div>
+      <div class="event-content">
+        <span class="badge badge-danger" style="margin-bottom:12px">🔴 LIVE EVENT</span>
+        <h2>🍔 Summer Burger Week</h2>
+        <p>Double XP & Rare Collectibles at all Burger Trucks! Don't miss out on the Golden Burger!</p>
+        <div class="event-meta">
+          <div class="event-time">
+            <span class="material-symbols-rounded">timer</span>
+            <span>2 days 14 hours remaining</span>
+          </div>
+          <button class="btn btn-primary">Join Event</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Missions -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h3>Daily Missions</h3>
+        <span class="badge badge-orange">3/5 done</span>
+      </div>
+
+      <div class="mission-list">
+        <div class="mission-item" *ngFor="let m of missions">
+          <div class="mission-left">
+            <div class="mission-icon" [style.background]="m.iconBg">
+              <span class="material-symbols-rounded">{{ m.icon }}</span>
+            </div>
+            <div class="mission-info">
+              <div class="mission-name">{{ m.name }}</div>
+              <div class="progress-bar-track" style="height:5px;margin-top:4px">
+                <div class="progress-bar-fill" [style.width]="m.pct + '%'"></div>
+              </div>
+              <div class="mission-progress">{{ m.current }}/{{ m.total }}</div>
+            </div>
+          </div>
+          <div class="mission-reward">
+            <span class="material-symbols-rounded" style="color:#FFD700">monetization_on</span>
+            {{ m.reward }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TRUCKS + ACTIVITY + LEVEL ===== -->
+  <div class="grid-3 mb-xl">
+
+    <!-- Nearby Food Trucks -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h3>Nearby Trucks</h3>
+        <a routerLink="/explore" class="view-all">View Map →</a>
+      </div>
+      <div class="truck-list">
+        <div class="truck-row" *ngFor="let t of nearbyTrucks">
+          <div class="truck-emoji-box">{{ t.emoji }}</div>
+          <div class="truck-info">
+            <div class="truck-name">{{ t.name }}</div>
+            <div class="truck-dist">
+              <span class="material-symbols-rounded">location_on</span> {{ t.distance }}
+            </div>
+          </div>
+          <span class="badge" [ngClass]="t.badgeClass">{{ t.status }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h3>Recent Activity</h3>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let a of activities">
+          <div class="activity-icon">{{ a.icon }}</div>
+          <div class="activity-info">
+            <div class="activity-desc">{{ a.desc }}</div>
+            <div class="activity-time">{{ a.time }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level Progress -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h3>Your Progress</h3>
+        <span class="badge badge-purple">Level 4</span>
+      </div>
+
+      <div class="level-display">
+        <div class="level-avatar">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=FF7B00" alt="Avatar">
+        </div>
+        <div class="level-info">
+          <div class="level-name">Novice Explorer</div>
+          <div class="level-next">Next: Burger Master (Lvl 5)</div>
+        </div>
+      </div>
+
+      <div class="xp-section">
+        <div class="xp-row">
+          <span>XP Progress</span>
+          <span class="text-gradient" style="font-weight:700">850 / 1000</span>
+        </div>
+        <div class="progress-bar-track" style="height:10px;margin:8px 0">
+          <div class="progress-bar-fill" style="width:85%"></div>
+        </div>
+      </div>
+
+      <div class="badges-preview">
+        <div class="badge-dot earned" title="Taco Taster">🌮</div>
+        <div class="badge-dot earned" title="First Scan">📷</div>
+        <div class="badge-dot earned" title="Burger Fan">🍔</div>
+        <div class="badge-dot" title="Coffee Hunter">☕</div>
+        <div class="badge-dot" title="Legend">🏆</div>
+      </div>
+
+      <a routerLink="/profile" class="btn btn-secondary" style="width:100%;margin-top:12px;justify-content:center">
+        View Full Profile
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.page-header-right {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.mb-xl { margin-bottom: var(--space-xl); }
+
+/* Stat card internals */
+.stat-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+}
+
+/* Event Banner */
+.event-banner {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+.event-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(255,123,0,0.8));
+  z-index: 0;
+}
+
+.event-content {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-xl);
+}
+
+.event-content h2 {
+  font-size: 1.6rem;
+  margin-bottom: var(--space-sm);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.event-content p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.event-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.event-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.event-time .material-symbols-rounded { font-size: 1rem; }
+
+/* Missions */
+.mission-list { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.mission-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.mission-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.mission-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mission-icon .material-symbols-rounded { font-size: 1.2rem; color: white; }
+
+.mission-info { flex: 1; }
+.mission-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+.mission-progress { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; }
+
+.mission-reward {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #FFD700;
+  flex-shrink: 0;
+}
+
+.mission-reward .material-symbols-rounded { font-size: 1rem; }
+
+/* Trucks */
+.truck-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.truck-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+}
+
+.truck-row:hover { background: var(--glass-bg); }
+
+.truck-emoji-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.truck-info { flex: 1; }
+.truck-name { font-size: 0.9rem; font-weight: 600; }
+.truck-dist {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.truck-dist .material-symbols-rounded { font-size: 0.85rem; }
+
+/* Activity */
+.activity-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+
+.activity-desc { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
+.activity-time { font-size: 0.72rem; color: var(--text-muted); }
+
+/* Level */
+.level-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+}
+
+.level-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.level-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.level-name { font-weight: 700; font-size: 0.95rem; }
+.level-next { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+.xp-section { margin-bottom: var(--space-md); }
+.xp-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.badges-preview {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.badge-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  filter: grayscale(1);
+  opacity: 0.35;
+  transition: all 0.2s;
+}
+
+.badge-dot.earned {
+  filter: none;
+  opacity: 1;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(255,123,0,0.3);
+}
+
+@media (max-width: 1200px) {
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .page-header { flex-direction: column; }
+  .page-header-right { width: 100%; }
+}
+</style>

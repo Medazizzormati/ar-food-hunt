@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Event' : 'Create New Event' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Event Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g. Summer Burger Week">
+    </mat-form-field>
+
+    <div style="display: flex; gap: 16px;">
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Event Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="Multiplier">Multiplier</mat-option>
+          <mat-option value="Special Drop">Special Drop</mat-option>
+          <mat-option value="Community Goal">Community Goal</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Multiplier</mat-label>
+        <mat-select formControlName="multiplier">
+          <mat-option value="1x">1x</mat-option>
+          <mat-option value="1.5x">1.5x</mat-option>
+          <mat-option value="2x">2x</mat-option>
+          <mat-option value="3x">3x</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Duration</mat-label>
+      <input matInput formControlName="duration" placeholder="E.g. 7 Days">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Active">Active</mat-option>
+        <mat-option value="Upcoming">Upcoming</mat-option>
+        <mat-option value="Ended">Ended</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="save()">
+    {{ isEditMode ? 'Save Changes' : 'Create Event' }}
+  </button>
+</mat-dialog-actions>

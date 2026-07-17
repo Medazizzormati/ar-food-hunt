@@ -1,0 +1,53 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p class="text-muted">Manage all registered players and platform users.</p>
+    </div>
+    <div class="header-actions">
+      <div class="search-box">
+        <span class="material-symbols-rounded search-icon">search</span>
+        <input type="text" placeholder="Search players...">
+      </div>
+      <button class="btn btn-primary" (click)="openUserDialog()">
+        <span class="material-symbols-rounded">person_add</span> Add User
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Level</th>
+            <th>Role</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td><span class="fw-600">{{ user.name }}</span></td>
+            <td><span class="badge badge-purple">Lvl {{ user.level }}</span></td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.joined }}</td>
+            <td>
+              <span class="badge" [ngClass]="user.status === 'Active' ? 'badge-success' : 'badge-danger'">
+                {{ user.status }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-sm">
+                <button class="btn-icon" (click)="openUserDialog(user)"><span class="material-symbols-rounded">edit</span></button>
+                <button class="btn-icon" (click)="deleteUser(user.id)" style="color: var(--color-danger)"><span class="material-symbols-rounded">delete</span></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

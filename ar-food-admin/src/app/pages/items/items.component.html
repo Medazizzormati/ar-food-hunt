@@ -1,0 +1,54 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>AR Items</h1>
+      <p class="text-muted">Manage ingredients, collectibles, and cosmetics.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openItemDialog()">
+        <span class="material-symbols-rounded">add_circle</span> Create Item
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Type</th>
+            <th>Rarity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items">
+            <td><span class="fw-600">{{ item.name }}</span></td>
+            <td>{{ item.type }}</td>
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'badge-info': item.rarity === 'Rare', 
+                      'badge-purple': item.rarity === 'Epic',
+                      'badge-orange': item.rarity === 'Legendary'
+                    }">
+                {{ item.rarity }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-sm">
+                <button class="btn-icon" (click)="openItemDialog(item)">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+                <button class="btn-icon" (click)="deleteItem(item.id)" style="color: var(--color-danger)">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

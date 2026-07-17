@@ -1,0 +1,20 @@
+<div class="custom-alert-container">
+  <div class="custom-alert-header">
+    <h2 class="alert-title">{{ data.title }}</h2>
+    <button class="alert-close-btn" (click)="onCancel()">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+  
+  <div class="custom-alert-body">
+    <div class="alert-row">
+      <div class="alert-text">
+        <div class="alert-subtitle">{{ data.message }}</div>
+      </div>
+      <div class="alert-actions">
+        <button class="alert-btn outline" (click)="onCancel()">{{ data.cancelText || 'Annuler' }}</button>
+        <button class="alert-btn" (click)="onConfirm()">{{ data.confirmText || 'Oui' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

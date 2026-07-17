@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit User' : 'Add New User' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g. John Doe">
+    </mat-form-field>
+
+    <div style="display: flex; gap: 16px;">
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Level</mat-label>
+        <input matInput type="number" formControlName="level">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 1">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value="Player">Player</mat-option>
+          <mat-option value="Admin">Admin</mat-option>
+          <mat-option value="Vendor">Vendor</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Account Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Active">Active</mat-option>
+        <mat-option value="Suspended">Suspended</mat-option>
+        <mat-option value="Banned">Banned</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="save()">
+    {{ isEditMode ? 'Save Changes' : 'Create User' }}
+  </button>
+</mat-dialog-actions>

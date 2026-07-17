@@ -1,0 +1,220 @@
+<!-- COLLECTIONS PAGE: Full-width responsive -->
+<div class="page animate-in">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>📚 Collections</h1>
+      <p class="text-muted">Complete sets of themed items to earn exclusive rewards.</p>
+    </div>
+    <div class="page-header-right">
+      <div class="badge badge-teal" style="font-size: 1rem; padding: 8px 16px;">
+        <span class="material-symbols-rounded" style="margin-right: 6px;">auto_awesome</span>
+        3/6 Sets Completed
+      </div>
+    </div>
+  </div>
+
+  <!-- Overall Progress Card -->
+  <div class="overall-progress card animate-in mb-xl">
+    <div class="op-left">
+      <h3>Overall Completion</h3>
+      <p class="text-muted">You've collected 42% of all available items in the game.</p>
+    </div>
+    <div class="op-right">
+      <div class="op-value text-gradient">42%</div>
+      <div class="op-circle">
+        <svg viewBox="0 0 42 42" class="circular-chart">
+          <circle class="circle-bg" cx="21" cy="21" r="15.91"></circle>
+          <circle class="circle-fill" cx="21" cy="21" r="15.91"
+                  stroke-dasharray="42, 100" stroke-dashoffset="25"></circle>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collections Grid -->
+  <div class="collections-grid">
+    <div class="collection-card card animate-in" *ngFor="let col of collections" [class.completed]="col.completed">
+      <div class="cc-header">
+        <div class="cc-icon">{{ col.icon }}</div>
+        <div class="cc-title-area">
+          <h3>{{ col.title }}</h3>
+          <div class="cc-progress-text">{{ col.collected }} / {{ col.total }} items</div>
+        </div>
+        <div class="cc-pct" [class.done]="col.completed">
+          {{ col.completed ? '✅' : col.pct + '%' }}
+        </div>
+      </div>
+
+      <div class="progress-bar-track" style="height:6px; margin-bottom:var(--space-md);">
+        <div class="progress-bar-fill" [style.width]="col.pct + '%'" [class.teal]="col.completed"></div>
+      </div>
+
+      <div class="cc-items">
+        <div class="cc-item" *ngFor="let item of col.items">
+          <div class="cc-item-icon" [class.locked]="!item.collected">
+            {{ item.collected ? item.emoji : '🔒' }}
+          </div>
+          <div class="cc-item-name">{{ item.name }}</div>
+        </div>
+      </div>
+
+      <div class="cc-reward" [class.locked]="!col.completed">
+        <span class="material-symbols-rounded">{{ col.completed ? 'redeem' : 'lock' }}</span>
+        <span>{{ col.completed ? 'Reward Unlocked: ' : 'Complete to unlock: ' }} {{ col.reward }}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+.page-header-right { flex-shrink: 0; }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+/* Overall Progress */
+.overall-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xl);
+  background: var(--bg-elevated);
+}
+
+.op-left h3 { margin-bottom: 4px; }
+
+.op-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.op-value { font-size: 2.5rem; font-weight: 800; font-family: var(--font-display); }
+
+.op-circle { width: 80px; height: 80px; }
+.circular-chart { transform: rotate(-90deg); width: 100%; height: 100%; }
+.circle-bg { fill: none; stroke: var(--border-color); stroke-width: 3; }
+.circle-fill {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+/* Collections Grid */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.collection-card {
+  transition: all 0.3s ease;
+}
+
+.collection-card.completed {
+  border: 1px solid var(--color-tertiary);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.collection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.cc-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.cc-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.cc-title-area { flex-grow: 1; }
+.cc-title-area h3 { font-size: 1.1rem; margin-bottom: 2px; }
+.cc-progress-text { font-size: 0.8rem; color: var(--text-muted); }
+
+.cc-pct {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--color-primary);
+}
+.cc-pct.done { color: var(--color-tertiary); font-size: 1.5rem; }
+
+/* Items */
+.cc-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.cc-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cc-item-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: all 0.2s;
+}
+
+.cc-item-icon.locked { filter: grayscale(1); opacity: 0.3; }
+.cc-item-name { font-size: 0.65rem; color: var(--text-secondary); text-align: center; }
+
+/* Reward */
+.cc-reward {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-tertiary);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.cc-reward.locked { color: var(--text-muted); font-weight: 500; }
+.cc-reward .material-symbols-rounded { font-size: 1.1rem; }
+
+@media (max-width: 1100px) {
+  .collections-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; }
+  .overall-progress { flex-direction: column; text-align: center; gap: var(--space-lg); }
+}
+</style>

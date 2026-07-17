@@ -1,0 +1,128 @@
+<div class="app-shell">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" [class.open]="mobileMenuOpen">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🍔</div>
+      <span class="brand-text">AR Food Hunt</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Main</div>
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         class="nav-item"
+         (click)="mobileMenuOpen = false">
+        <span class="material-symbols-rounded">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+        <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item" style="cursor: pointer;" (click)="toggleSettings()">
+        <span class="material-symbols-rounded">settings</span>
+        <span>Settings</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay"
+       *ngIf="mobileMenuOpen"
+       (click)="mobileMenuOpen = false"></div>
+
+  <!-- ===== MAIN AREA ===== -->
+  <div class="main-area">
+    <!-- Top Navigation -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon btn-ghost mobile-menu-btn" (click)="toggleMobileMenu()">
+          <span class="material-symbols-rounded">menu</span>
+        </button>
+        <div class="topbar-search">
+          <span class="material-symbols-rounded">search</span>
+          <input type="text" placeholder="Search food trucks, collectibles...">
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Notifications -->
+        <div style="position: relative;">
+          <button class="topbar-icon-btn" (click)="toggleNotifications()">
+            <span class="material-symbols-rounded">notifications</span>
+            <span class="notif-dot"></span>
+          </button>
+          
+          <!-- Notifications Dropdown -->
+          <div class="dropdown-menu" *ngIf="showNotifications">
+            <div class="dropdown-header">
+              <span class="fw-bold">Notifications</span>
+            </div>
+            <div class="dropdown-item">
+              <span class="material-symbols-rounded" style="color: var(--text-accent)">star</span>
+              <div>
+                <div class="fw-bold">Level Up!</div>
+                <div class="text-sm text-muted">You reached Level 5.</div>
+              </div>
+            </div>
+            <div class="dropdown-item">
+              <span class="material-symbols-rounded" style="color: var(--color-success)">local_activity</span>
+              <div>
+                <div class="fw-bold">New Coupon</div>
+                <div class="text-sm text-muted">20% off at Taco Trek</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button class="topbar-icon-btn" (click)="toggleTheme()">
+          <span class="material-symbols-rounded">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
+        </button>
+        
+        <!-- Profile Photo -->
+        <div class="topbar-avatar" (click)="changeProfilePhoto()" style="cursor: pointer;" title="Change Profile Photo">
+          <img [src]="profilePhoto" alt="Avatar">
+        </div>
+      </div>
+    </header>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" *ngIf="showSettings" (click)="toggleSettings()">
+      <div class="modal-content card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="btn-icon" (click)="toggleSettings()">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-row">
+            <div>
+              <div class="fw-bold">Dark Mode</div>
+              <div class="text-sm text-muted">Toggle application theme</div>
+            </div>
+            <button class="btn btn-secondary" (click)="toggleTheme()">
+              Toggle Theme
+            </button>
+          </div>
+          <div class="setting-row" style="margin-top: 16px;">
+            <div>
+              <div class="fw-bold">Push Notifications</div>
+              <div class="text-sm text-muted">Receive alerts for new events</div>
+            </div>
+            <button class="btn btn-secondary">
+              Configure
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

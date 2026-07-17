@@ -1,0 +1,250 @@
+<!-- INVENTORY PAGE: Full-width responsive grid -->
+<div class="page animate-in">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>🎒 My Inventory</h1>
+      <p class="text-muted">Your collected food items and rare finds.</p>
+    </div>
+    <div class="page-header-right">
+      <div class="search-box">
+        <span class="material-symbols-rounded">search</span>
+        <input type="text" placeholder="Search items..." [(ngModel)]="searchTerm">
+      </div>
+      <a routerLink="/collections" class="btn btn-secondary">
+        <span class="material-symbols-rounded">collections_bookmark</span>
+        Collections
+      </a>
+    </div>
+  </div>
+
+  <!-- Mini Stats -->
+  <div class="grid-4 mb-xl">
+    <div class="mini-stat card accent-orange animate-in">
+      <div class="mini-icon">📦</div>
+      <div class="mini-val">24</div>
+      <div class="mini-label">Total Items</div>
+    </div>
+    <div class="mini-stat card accent-teal animate-in">
+      <div class="mini-icon">🔵</div>
+      <div class="mini-val">18</div>
+      <div class="mini-label">Common</div>
+    </div>
+    <div class="mini-stat card accent-purple animate-in">
+      <div class="mini-icon">⭐</div>
+      <div class="mini-val">5</div>
+      <div class="mini-label">Rare</div>
+    </div>
+    <div class="mini-stat card accent-success animate-in">
+      <div class="mini-icon">💎</div>
+      <div class="mini-val">1</div>
+      <div class="mini-label">Legendary</div>
+    </div>
+  </div>
+
+  <!-- Category Filters -->
+  <div class="filter-row mb-lg">
+    <button class="filter-chip" *ngFor="let f of categories"
+            (click)="activeCategory = f"
+            [class.active]="activeCategory === f">{{ f }}</button>
+  </div>
+
+  <!-- Items Grid -->
+  <div class="items-grid mb-xl">
+    <div class="item-card animate-in" *ngFor="let item of filteredItems">
+      <div class="rarity-bar" [ngClass]="item.rarity"></div>
+      <div class="item-body">
+        <div class="item-emoji">{{ item.emoji }}</div>
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-meta">
+          <span class="badge" [ngClass]="rarityBadge(item.rarity)">{{ item.rarity | uppercase }}</span>
+          <span class="item-xp">+{{ item.xp }} XP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collections CTA -->
+  <div class="collections-cta card">
+    <div class="cta-left">
+      <span class="cta-icon">🎯</span>
+      <div>
+        <h3>Complete Your Collections</h3>
+        <p class="text-muted">Finish a full set to unlock exclusive avatars and rewards.</p>
+      </div>
+    </div>
+    <a routerLink="/collections" class="btn btn-primary">
+      <span class="material-symbols-rounded">collections_bookmark</span>
+      View Collections
+    </a>
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.page-header-right {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  min-width: 220px;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-sans);
+}
+
+.search-box .material-symbols-rounded { color: var(--text-muted); font-size: 1.1rem; }
+
+.mb-xl { margin-bottom: var(--space-xl); }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+/* Mini stats */
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+.mini-icon { font-size: 1.5rem; }
+.mini-val { font-size: 1.5rem; font-weight: 800; font-family: var(--font-display); }
+.mini-label { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Filters */
+.filter-row {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-chip.active,
+.filter-chip:hover {
+  background: rgba(255,123,0,0.12);
+  border-color: rgba(255,123,0,0.4);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Items Grid */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-md);
+}
+
+.item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.item-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-hover);
+}
+
+.rarity-bar {
+  height: 4px;
+  width: 100%;
+}
+
+.rarity-bar.common { background: #6B7280; }
+.rarity-bar.rare { background: linear-gradient(90deg, #F59E0B, #FFD700); }
+.rarity-bar.legendary { background: linear-gradient(90deg, #7C3AED, #E040FB); }
+
+.item-body {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-sm);
+}
+
+.item-emoji { font-size: 2.5rem; line-height: 1; }
+.item-name { font-size: 0.8rem; font-weight: 600; }
+
+.item-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.item-xp { font-size: 0.68rem; color: var(--color-tertiary); font-weight: 700; }
+
+/* Collections CTA */
+.collections-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.cta-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.cta-icon { font-size: 2.5rem; }
+.cta-left h3 { margin-bottom: 4px; }
+.cta-left p { font-size: 0.85rem; }
+
+@media (max-width: 1400px) { .items-grid { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 1100px) { .items-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 900px)  { .items-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px)  { .items-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px)  {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .page-header { flex-direction: column; }
+  .collections-cta { flex-direction: column; align-items: flex-start; }
+  .page-header-right { flex-wrap: wrap; }
+}
+</style>

@@ -1,0 +1,170 @@
+<div class="page animate-in">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Platform Overview</h1>
+      <p class="text-muted">Real-time metrics and activity across all food trucks.</p>
+    </div>
+    <div class="header-actions">
+      <div class="date-picker">
+        <span class="material-symbols-rounded">calendar_today</span>
+        <span>Last 7 Days</span>
+        <span class="material-symbols-rounded">expand_more</span>
+      </div>
+      <button class="btn btn-secondary">
+        <span class="material-symbols-rounded">download</span> Export Report
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="grid-4 mb-xl">
+    <div class="kpi-card card animate-in">
+      <div class="kpi-top">
+        <div class="kpi-title">Total Players</div>
+        <span class="badge badge-success">+12.5%</span>
+      </div>
+      <div class="kpi-value">24,592</div>
+      <div class="kpi-chart">
+        <div class="sparkline green"></div>
+      </div>
+    </div>
+
+    <div class="kpi-card card animate-in" style="animation-delay: 0.1s">
+      <div class="kpi-top">
+        <div class="kpi-title">Active Food Trucks</div>
+        <span class="badge badge-success">+3 this week</span>
+      </div>
+      <div class="kpi-value">148</div>
+      <div class="kpi-chart">
+        <div class="sparkline blue"></div>
+      </div>
+    </div>
+
+    <div class="kpi-card card animate-in" style="animation-delay: 0.2s">
+      <div class="kpi-top">
+        <div class="kpi-title">Items Collected</div>
+        <span class="badge badge-orange">+28.4%</span>
+      </div>
+      <div class="kpi-value text-gradient">1.2M</div>
+      <div class="kpi-chart">
+        <div class="sparkline orange"></div>
+      </div>
+    </div>
+
+    <div class="kpi-card card animate-in" style="animation-delay: 0.3s">
+      <div class="kpi-top">
+        <div class="kpi-title">Coupons Redeemed</div>
+        <span class="badge badge-purple">+5.2%</span>
+      </div>
+      <div class="kpi-value">8,405</div>
+      <div class="kpi-chart">
+        <div class="sparkline purple"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-layout mb-xl">
+    <!-- Main Chart Area -->
+    <div class="card animate-in chart-card">
+      <div class="section-header">
+        <h3>Engagement Activity</h3>
+        <div class="chart-legend">
+          <span><div class="legend-dot orange"></div> AR Scans</span>
+          <span><div class="legend-dot purple"></div> Truck Visits</span>
+        </div>
+      </div>
+      
+      <!-- CSS-based mock chart -->
+      <div class="mock-chart-container">
+        <div class="chart-y-axis">
+          <span>10k</span>
+          <span>7.5k</span>
+          <span>5k</span>
+          <span>2.5k</span>
+          <span>0</span>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar-group" *ngFor="let day of [1,2,3,4,5,6,7]">
+            <div class="bar bar-1" [style.height]="(50 + (day * 8) % 40) + '%'"></div>
+            <div class="bar bar-2" [style.height]="(30 + (day * 15) % 30) + '%'"></div>
+          </div>
+        </div>
+        <div class="chart-x-axis">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Activity Feed -->
+    <div class="card animate-in activity-card">
+      <div class="section-header">
+        <h3>Live Activity</h3>
+        <button class="btn-icon"><span class="material-symbols-rounded">more_horiz</span></button>
+      </div>
+
+      <div class="activity-feed">
+        <div class="feed-item" *ngFor="let item of activities">
+          <div class="feed-icon" [ngClass]="item.colorClass">
+            <span class="material-symbols-rounded">{{ item.icon }}</span>
+          </div>
+          <div class="feed-content">
+            <div class="feed-text"><span class="fw-600">{{ item.user }}</span> {{ item.action }} <span class="fw-600 text-gradient">{{ item.target }}</span></div>
+            <div class="feed-time">{{ item.time }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-top:var(--space-md)">
+        View All Logs
+      </button>
+    </div>
+  </div>
+  
+  <!-- Food Truck Performance Table -->
+  <div class="card animate-in">
+    <div class="section-header mb-md">
+      <h3>Top Performing Food Trucks</h3>
+      <button class="btn btn-secondary">View All Trucks</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Truck Name</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Total Scans</th>
+            <th>Active Event</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of topTrucks">
+            <td>
+              <div class="d-flex align-center gap-sm">
+                <div class="truck-avatar">{{ t.emoji }}</div>
+                <span class="fw-600">{{ t.name }}</span>
+              </div>
+            </td>
+            <td><span class="text-muted">{{ t.category }}</span></td>
+            <td>{{ t.location }}</td>
+            <td class="fw-600">{{ t.scans | number }}</td>
+            <td><span class="badge" [ngClass]="t.event ? 'badge-orange' : 'badge-info'">{{ t.event || 'None' }}</span></td>
+            <td>
+              <div class="status-indicator">
+                <span class="dot" [ngClass]="t.status === 'Active' ? 'green' : 'gray'"></span>
+                {{ t.status }}
+              </div>
+            </td>
+            <td>
+              <button class="btn-icon"><span class="material-symbols-rounded">chevron_right</span></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

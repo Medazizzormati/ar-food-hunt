@@ -1,0 +1,741 @@
+<!-- AR HUNT PAGE: Full-width responsive -->
+<div class="page animate-in">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>📷 AR Scanner</h1>
+      <p class="text-muted">Point your camera at a food truck to find collectibles.</p>
+    </div>
+    <div class="page-header-right">
+      <!-- View Mode Toggle -->
+      <div class="view-toggle">
+        <button class="toggle-btn" [class.active]="viewMode === 'ar'" (click)="toggleViewMode('ar')">
+          AR View
+        </button>
+        <button class="toggle-btn" [class.active]="viewMode === 'map'" (click)="toggleViewMode('map')">
+          Map View
+        </button>
+      </div>
+      <a routerLink="/explore" class="btn btn-secondary">
+        <span class="material-symbols-rounded">close</span>
+        Exit Scanner
+      </a>
+    </div>
+  </div>
+
+  <!-- AR Simulator Layout -->
+  <div class="ar-layout" *ngIf="viewMode === 'ar'">
+
+    <!-- The Camera / Map View -->
+    <div class="ar-view-container card animate-in">
+      <div class="ar-camera-bg">
+        <!-- Animated Scanner Line -->
+        <div class="scanner-line"></div>
+
+        <!-- Street Food Truck AR Markers with Collectibles -->
+        <div class="ar-truck-marker" style="top: 25%; left: 30%; animation-delay: 0s;">
+          <!-- Collectible Above Truck -->
+          <div class="ar-item" style="position: relative; top: -40px; left: 0;">
+            <div class="ar-collect-btn">COLLECT</div>
+            <div class="ar-emoji">🍔</div>
+          </div>
+          <div class="ar-truck-label">Burger Bliss</div>
+          <div class="ar-truck-emoji">🍔</div>
+          <div class="ar-truck-distance">50m</div>
+        </div>
+
+        <div class="ar-truck-marker" style="top: 45%; left: 65%; animation-delay: 1s;">
+          <!-- Collectible Above Truck -->
+          <div class="ar-item" style="position: relative; top: -40px; left: 0;">
+            <div class="ar-collect-btn">COLLECT</div>
+            <div class="ar-emoji">🍕</div>
+          </div>
+          <div class="ar-truck-label">Pizza Planet</div>
+          <div class="ar-truck-emoji">🍕</div>
+          <div class="ar-truck-distance">120m</div>
+        </div>
+
+        <div class="ar-truck-marker" style="top: 65%; left: 40%; animation-delay: 2s;">
+          <!-- Collectible Above Truck -->
+          <div class="ar-item" style="position: relative; top: -40px; left: 0;">
+            <div class="ar-collect-btn">COLLECT</div>
+            <div class="ar-emoji">🌮</div>
+          </div>
+          <div class="ar-truck-label">Taco Trek</div>
+          <div class="ar-truck-emoji">🌮</div>
+          <div class="ar-truck-distance">250m</div>
+        </div>
+
+        <!-- Additional floating collectibles -->
+        <div class="ar-item" style="top: 50%; left: 70%; animation-delay: 1.5s;">
+          <div class="ar-collect-btn">COLLECT</div>
+          <div class="ar-emoji" style="transform: scale(1.2)">🍦</div>
+        </div>
+
+        <div class="ar-item" style="top: 70%; left: 35%; animation-delay: 0.8s;">
+          <div class="ar-collect-btn rare">RARE</div>
+          <div class="ar-emoji">🎟️</div>
+        </div>
+
+        <!-- Target Reticle -->
+        <div class="ar-reticle">
+          <div class="reticle-corner tl"></div>
+          <div class="reticle-corner tr"></div>
+          <div class="reticle-corner bl"></div>
+          <div class="reticle-corner br"></div>
+        </div>
+      </div>
+
+      <div class="ar-controls">
+        <button class="ar-btn side-btn"><span class="material-symbols-rounded">flash_on</span></button>
+        <button class="ar-capture-btn">
+          <div class="capture-inner"></div>
+        </button>
+        <button class="ar-btn side-btn"><span class="material-symbols-rounded">cameraswitch</span></button>
+      </div>
+    </div>
+
+    <!-- Scan Info Sidebar -->
+    <div class="ar-info-panel">
+      <div class="card animate-in mb-lg">
+        <div class="section-header" style="margin-bottom:var(--space-md)">
+          <h3>Detected Location</h3>
+          <span class="badge badge-success">Target Acquired</span>
+        </div>
+        <div class="detected-truck">
+          <div class="truck-emoji-box">🍔</div>
+          <div style="flex:1">
+            <h4 style="font-size:1.1rem; margin-bottom:4px">Burger Bliss</h4>
+            <p class="text-muted" style="font-size:0.8rem">4 items available here</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card animate-in">
+        <h3 style="margin-bottom:var(--space-md)">How to Hunt</h3>
+        <ul class="hunt-instructions">
+          <li>
+            <span class="material-symbols-rounded">center_focus_strong</span>
+            Look around the food truck with your device.
+          </li>
+          <li>
+            <span class="material-symbols-rounded">ads_click</span>
+            Tap on floating collectibles to catch them.
+          </li>
+          <li>
+            <span class="material-symbols-rounded">qr_code_scanner</span>
+            Or scan a QR code for a guaranteed drop.
+          </li>
+        </ul>
+        <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-top:var(--space-lg)">
+          <span class="material-symbols-rounded">qr_code_2</span>
+          Scan QR Code Instead
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map View Layout -->
+  <div class="map-layout" *ngIf="viewMode === 'map'">
+    <div class="map-view-container card animate-in">
+      <div class="map-bg">
+        <!-- Map Grid -->
+        <div class="map-grid"></div>
+        
+        <!-- Food Truck Markers -->
+        <div class="map-truck-marker" *ngFor="let truck of foodTrucks" 
+             [style.top.%]="truck.y" [style.left.%]="truck.x"
+             (click)="selectTruck(truck)">
+          <div class="collect-badge" *ngIf="truck.hasCollectibles">COLLECT</div>
+          <div class="truck-emoji">{{ truck.emoji }}</div>
+          <div class="truck-label">{{ truck.name }}</div>
+          <div class="truck-distance">{{ truck.distance }}</div>
+        </div>
+        
+        <!-- User Location -->
+        <div class="user-pin" style="top:50%;left:44%;">
+          <div class="user-dot"></div>
+          <div class="user-ring"></div>
+        </div>
+      </div>
+      
+      <!-- Map Controls -->
+      <div class="map-controls">
+        <button class="map-btn">
+          <span class="material-symbols-rounded">my_location</span>
+        </button>
+        <button class="map-btn">
+          <span class="material-symbols-rounded">zoom_in</span>
+        </button>
+        <button class="map-btn">
+          <span class="material-symbols-rounded">zoom_out</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Truck List Panel -->
+    <div class="truck-list-panel card animate-in">
+      <h3>Nearby Food Trucks</h3>
+      <div class="truck-list">
+        <div class="truck-list-item" *ngFor="let truck of foodTrucks" (click)="selectTruck(truck)">
+          <div class="truck-list-emoji">{{ truck.emoji }}</div>
+          <div class="truck-list-info">
+            <div class="truck-list-name">{{ truck.name }}</div>
+            <div class="truck-list-distance">{{ truck.distance }}</div>
+          </div>
+          <div class="truck-list-status" *ngIf="truck.hasCollectibles">
+            <span class="badge badge-success">Has Items</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.toggle-btn:hover:not(.active) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.ar-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.ar-view-container {
+  position: relative;
+  height: 600px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.ar-camera-bg {
+  flex: 1;
+  background-image: url('https://images.unsplash.com/photo-1565123409695-3756158ac242?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ar-camera-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.scanner-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--color-tertiary);
+  box-shadow: 0 0 20px 4px var(--color-tertiary);
+  animation: scanLine 3s linear infinite;
+  z-index: 2;
+}
+
+@keyframes scanLine {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.ar-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  z-index: 5;
+}
+
+.reticle-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-color: rgba(255,255,255,0.7);
+  border-style: solid;
+  border-width: 0;
+}
+.tl { top: 0; left: 0; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 12px; }
+.tr { top: 0; right: 0; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 12px; }
+.bl { bottom: 0; left: 0; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 12px; }
+.br { bottom: 0; right: 0; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 12px; }
+
+.ar-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  animation: floatAnim 3s ease-in-out infinite alternate;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ar-item:hover { transform: scale(1.1); }
+
+@keyframes floatAnim {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}
+
+.ar-collect-btn {
+  background: var(--grad-orange);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+.ar-collect-btn.rare { background: linear-gradient(135deg, #7C3AED, #E040FB); }
+
+.ar-emoji {
+  font-size: 4rem;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+}
+
+/* Street Food Truck AR Markers */
+.ar-truck-marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 8;
+  animation: floatAnim 4s ease-in-out infinite alternate;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ar-truck-marker:hover {
+  transform: scale(1.1);
+  z-index: 12;
+}
+
+.ar-truck-label {
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+
+.ar-truck-emoji {
+  font-size: 3rem;
+  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
+}
+
+.ar-truck-distance {
+  background: var(--color-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255,123,0,0.4);
+}
+
+.ar-controls {
+  height: 100px;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xl);
+  padding: 0 var(--space-xl);
+}
+
+.ar-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ar-btn:hover { background: rgba(255,255,255,0.2); }
+.ar-btn .material-symbols-rounded { font-size: 1.5rem; }
+
+.ar-capture-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: transparent;
+  border: 4px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s;
+}
+
+.ar-capture-btn:active { transform: scale(0.95); }
+
+.capture-inner {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: white;
+  transition: all 0.2s;
+}
+
+.ar-capture-btn:hover .capture-inner { background: #e0e0e0; }
+
+.detected-truck {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: rgba(255,255,255,0.03);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.truck-emoji-box {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  border: 1px solid var(--border-color);
+}
+
+.hunt-instructions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.hunt-instructions li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.hunt-instructions li .material-symbols-rounded {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .ar-layout { grid-template-columns: 1fr; }
+  .ar-view-container { height: 500px; }
+}
+
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; }
+  .ar-controls { gap: var(--space-lg); }
+  .ar-view-container { height: 450px; }
+  .ar-reticle { width: 180px; height: 180px; }
+}
+
+/* Map Layout Styles */
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.map-view-container {
+  position: relative;
+  height: 600px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.map-bg {
+  position: absolute;
+  inset: 0;
+  background: #1a2432;
+  overflow: hidden;
+}
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Map Truck Markers */
+.map-truck-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.map-truck-marker:hover {
+  transform: translate(-50%, -100%) scale(1.1);
+  z-index: 15;
+}
+
+.collect-badge {
+  background: var(--color-warning);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: 0.5px;
+}
+
+.truck-emoji {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.truck-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  color: white;
+}
+
+.truck-distance {
+  background: var(--color-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255,123,0,0.4);
+}
+
+/* User Pin */
+.user-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.user-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--color-tertiary);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 12px var(--color-tertiary);
+}
+
+.user-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(6,182,212,0.2);
+  animation: pingAnim 2s ease-in-out infinite;
+}
+
+/* Map Controls */
+.map-controls {
+  position: absolute;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  z-index: 20;
+}
+
+.map-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-md);
+}
+
+.map-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Truck List Panel */
+.truck-list-panel {
+  padding: var(--space-lg);
+}
+
+.truck-list-panel h3 {
+  margin: 0 0 var(--space-md) 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.truck-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.truck-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.truck-list-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  transform: translateX(4px);
+}
+
+.truck-list-emoji {
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.truck-list-info {
+  flex: 1;
+}
+
+.truck-list-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.truck-list-distance {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translate(-50%, -100%) translateY(0); }
+  50% { transform: translate(-50%, -100%) translateY(-8px); }
+}
+
+@keyframes pingAnim {
+  0%,100% { transform: translateX(-50%) scale(0.8); opacity: 1; }
+  50% { transform: translateX(-50%) scale(1.6); opacity: 0; }
+}
+
+@media (max-width: 1024px) {
+  .map-layout { grid-template-columns: 1fr; }
+  .map-view-container { height: 500px; }
+}
+
+@media (max-width: 768px) {
+  .view-toggle { width: 100%; }
+  .toggle-btn { flex: 1; }
+  .map-layout { grid-template-columns: 1fr; }
+  .map-view-container { height: 450px; }
+  .truck-list-panel { display: none; }
+}
+</style>

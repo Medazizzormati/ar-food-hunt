@@ -1,0 +1,43 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>AR Heatmap</h1>
+      <p class="text-muted">Live view of player locations and item spawns.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary">
+        <span class="material-symbols-rounded">refresh</span> Refresh Map
+      </button>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 0; overflow: hidden; border-radius: var(--radius-lg); height: 600px; position: relative; background: #0A1929; border: 1px solid var(--border-color);">
+    <!-- Simulated Grid Pattern -->
+    <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    
+    <!-- Hotspots -->
+    <div *ngFor="let spot of hotspots" 
+         [style.top]="spot.top" 
+         [style.left]="spot.left"
+         style="position: absolute; border-radius: 50%; transform: translate(-50%, -50%); animation: pulse 2s infinite;"
+         [ngClass]="{
+           'glow-high': spot.intensity === 'high',
+           'glow-medium': spot.intensity === 'medium',
+           'glow-low': spot.intensity === 'low'
+         }">
+    </div>
+
+    <!-- Map Overlay Labels -->
+    <div style="position: absolute; top: 20px; left: 20px; background: var(--glass-bg); padding: 10px 15px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); backdrop-filter: blur(10px);">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+        <span style="width: 12px; height: 12px; border-radius: 50%; background: #EF4444; box-shadow: 0 0 10px #EF4444;"></span> High Activity
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+        <span style="width: 12px; height: 12px; border-radius: 50%; background: #F59E0B; box-shadow: 0 0 10px #F59E0B;"></span> Medium Activity
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 12px; height: 12px; border-radius: 50%; background: #3B82F6; box-shadow: 0 0 10px #3B82F6;"></span> Low Activity
+      </div>
+    </div>
+  </div>
+</div>

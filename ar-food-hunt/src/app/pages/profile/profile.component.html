@@ -1,0 +1,383 @@
+<!-- PROFILE PAGE: Full-width responsive -->
+<div class="page animate-in">
+
+  <!-- Hero Card -->
+  <div class="profile-hero card animate-in mb-xl">
+    <div class="hero-gradient"></div>
+    <div class="hero-body">
+      <div class="hero-left">
+        <div class="hero-avatar" (click)="changeProfilePhoto()" style="cursor: pointer;" title="Change Profile Photo">
+          <img [src]="profilePhoto" alt="Profile">
+          <div class="avatar-level-badge">4</div>
+        </div>
+        <div class="hero-info">
+          <h1>Alex Hunter</h1>
+          <p class="hero-title">🔥 Burger Master · Novice Explorer</p>
+          <div class="hero-tags">
+            <span class="badge badge-orange">Level 4</span>
+            <span class="badge badge-purple">12 Trucks</span>
+            <span class="badge badge-teal">24 Items</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat" *ngFor="let s of heroStats">
+          <div class="hs-icon">{{ s.icon }}</div>
+          <div class="hs-val">{{ s.value }}</div>
+          <div class="hs-lbl">{{ s.label }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-xp">
+      <div class="xp-text">
+        <span>Level 4 → 5</span>
+        <span class="text-gradient" style="font-weight:700">850 / 1000 XP</span>
+      </div>
+      <div class="progress-bar-track" style="height:10px">
+        <div class="progress-bar-fill" style="width:85%"></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">150 XP remaining to unlock Burger Master title</div>
+    </div>
+  </div>
+
+  <!-- VIP PASS BANNER -->
+  <div class="vip-banner mb-xl animate-in">
+    <div class="vip-left">
+      <div class="vip-emoji">👑</div>
+      <div class="vip-info">
+        <h3>VIP PASS</h3>
+        <p>Unlimited access &bull; Exclusive events &bull; 2&times; rewards every day</p>
+      </div>
+    </div>
+    <div class="vip-right">
+      <button class="btn btn-primary" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white;">Upgrade Now</button>
+    </div>
+  </div>
+
+  <!-- Two columns: Achievements + Trucks -->
+  <div class="grid-2 mb-xl">
+
+    <!-- Achievements -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h2>Achievements</h2>
+        <span class="badge badge-orange">3/6 earned</span>
+      </div>
+      <div class="badges-grid">
+        <div class="badge-card" *ngFor="let b of badges" [class.earned]="b.earned" [title]="b.name">
+          <div class="badge-emoji">{{ b.icon }}</div>
+          <div class="badge-name">{{ b.name }}</div>
+          <div class="badge-meta">{{ b.earned ? '✅ Earned' : '🔒 Locked' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visited Trucks -->
+    <div class="card animate-in">
+      <div class="section-header">
+        <h2>Visited Food Trucks</h2>
+        <a routerLink="/explore" class="view-all">Explore more →</a>
+      </div>
+      <div class="visit-list">
+        <div class="visit-item" *ngFor="let t of visitedTrucks">
+          <div class="visit-emoji">{{ t.emoji }}</div>
+          <div class="visit-info">
+            <div class="visit-name">{{ t.name }}</div>
+            <div class="visit-meta">{{ t.visits }} visits · {{ t.items }} items collected</div>
+            <div class="progress-bar-track" style="height:4px;margin-top:6px">
+              <div class="progress-bar-fill teal" [style.width]="(t.items / 8 * 100) + '%'"></div>
+            </div>
+          </div>
+          <div class="visit-date">{{ t.date }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="card animate-in">
+    <div class="section-header">
+      <h2>Account Settings</h2>
+    </div>
+    <div class="settings-grid">
+      <div class="settings-item" *ngFor="let s of settings">
+        <div class="settings-icon">
+          <span class="material-symbols-rounded">{{ s.icon }}</span>
+        </div>
+        <div class="settings-info">
+          <div class="settings-label">{{ s.label }}</div>
+          <div class="settings-desc">{{ s.desc }}</div>
+        </div>
+        <span class="material-symbols-rounded settings-arrow">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+/* Hero */
+.profile-hero {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--grad-orange-purple);
+  z-index: 1;
+}
+
+.hero-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.hero-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.hero-avatar {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid var(--color-primary);
+  box-shadow: 0 0 24px rgba(255,123,0,0.3);
+  object-fit: cover;
+}
+
+.avatar-level-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: var(--grad-orange-purple);
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.hero-info h1 { font-size: 1.8rem; margin-bottom: 6px; }
+.hero-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: var(--space-md); }
+
+.hero-tags {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  text-align: center;
+  min-width: 64px;
+}
+
+.hs-icon { font-size: 1.4rem; margin-bottom: 4px; }
+.hs-val { font-size: 1.3rem; font-weight: 800; font-family: var(--font-display); }
+.hs-lbl { font-size: 0.7rem; color: var(--text-muted); }
+
+/* XP bar in hero */
+.hero-xp {
+  padding: var(--space-lg) var(--space-xl);
+  border-top: 1px solid var(--border-color);
+}
+
+.xp-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.view-all { color: var(--color-primary); font-size: 0.85rem; font-weight: 600; }
+
+/* Badges grid */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.badge-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+  filter: grayscale(1);
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.badge-card.earned {
+  filter: none;
+  opacity: 1;
+  border-color: rgba(255,123,0,0.3);
+  background: rgba(255,123,0,0.05);
+}
+
+.badge-emoji { font-size: 1.8rem; margin-bottom: 6px; }
+.badge-name { font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
+.badge-meta { font-size: 0.65rem; color: var(--text-muted); }
+
+/* Visited trucks */
+.visit-list { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.visit-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+}
+
+.visit-item:hover { background: var(--glass-bg-hover); }
+
+.visit-emoji {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.visit-info { flex: 1; }
+.visit-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+.visit-meta { font-size: 0.75rem; color: var(--text-muted); }
+.visit-date { font-size: 0.72rem; color: var(--text-muted); flex-shrink: 0; }
+
+/* Settings grid */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-item:hover { background: var(--glass-bg); }
+
+.settings-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,123,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-icon .material-symbols-rounded { color: #FF7B00; font-size: 1.3rem; }
+
+.settings-info { flex: 1; }
+.settings-label { font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+.settings-desc { font-size: 0.75rem; color: var(--text-muted); }
+
+.settings-arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+/* VIP Banner */
+.vip-banner {
+  background: linear-gradient(90deg, #5B1B9C, #8C3CE5, #5B1B9C);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg) var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  box-shadow: 0 8px 24px rgba(140, 60, 229, 0.2);
+}
+
+.vip-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.vip-emoji {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.vip-info h3 {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.vip-info p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .vip-banner { flex-direction: column; text-align: center; }
+  .vip-left { flex-direction: column; gap: var(--space-md); }
+}
+
+@media (max-width: 900px) {
+  .hero-body { flex-direction: column; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .badges-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .hero-left { flex-direction: column; text-align: center; }
+}
+</style>

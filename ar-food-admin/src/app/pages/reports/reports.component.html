@@ -1,0 +1,333 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>📊 Reports</h1>
+      <p class="text-muted">View and export analytics reports with date filtering.</p>
+    </div>
+    <div class="header-actions">
+      <!-- Date Filter Dropdown -->
+      <div class="date-filter-wrapper">
+        <button class="btn btn-secondary" (click)="toggleDateDropdown()">
+          <span class="material-symbols-rounded">calendar_today</span>
+          {{ selectedDateFilter }}
+          <span class="material-symbols-rounded dropdown-arrow">expand_more</span>
+        </button>
+        <div class="dropdown-menu" *ngIf="showDateDropdown">
+          <div class="dropdown-item" *ngFor="let filter of dateFilters" (click)="selectDateFilter(filter)">
+            {{ filter }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Export Button -->
+      <button class="btn btn-primary" (click)="exportReport()">
+        <span class="material-symbols-rounded">download</span> Export Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card card">
+      <div class="card-header">
+        <span class="card-title">Total Revenue</span>
+        <span class="card-icon">💰</span>
+      </div>
+      <div class="card-value">$12,450</div>
+      <div class="card-change positive">+28.4%</div>
+    </div>
+    <div class="summary-card card">
+      <div class="card-header">
+        <span class="card-title">Coupons Redeemed</span>
+        <span class="card-icon">🎟️</span>
+      </div>
+      <div class="card-value">1,247</div>
+      <div class="card-change positive">+5.2%</div>
+    </div>
+    <div class="summary-card card">
+      <div class="card-header">
+        <span class="card-title">Active Users</span>
+        <span class="card-icon">👥</span>
+      </div>
+      <div class="card-value">3,891</div>
+      <div class="card-change positive">+12.3%</div>
+    </div>
+    <div class="summary-card card">
+      <div class="card-header">
+        <span class="card-title">Food Trucks</span>
+        <span class="card-icon">🚚</span>
+      </div>
+      <div class="card-value">156</div>
+      <div class="card-change positive">+8.1%</div>
+    </div>
+  </div>
+
+  <!-- Report Data List -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Report Data</h3>
+      <span class="badge badge-purple">{{ reportData.length }} entries</span>
+    </div>
+    
+    <div class="report-list">
+      <div class="report-item" *ngFor="let item of reportData">
+        <div class="report-date">
+          <div class="date-day">{{ item.date.split('-')[2] }}</div>
+          <div class="date-month">{{ item.date.split('-')[1] }}</div>
+        </div>
+        <div class="report-content">
+          <div class="report-type">{{ item.type }}</div>
+          <div class="report-title">{{ item.title }}</div>
+        </div>
+        <div class="report-value">{{ item.value.toLocaleString() }}</div>
+        <div class="report-change" [style.color]="getChangeColor(item.change)">
+          <span class="material-symbols-rounded">
+            {{ item.change.startsWith('+') ? 'trending_up' : 'trending_down' }}
+          </span>
+          {{ item.change }}
+        </div>
+        <div class="report-status">
+          <span class="badge" [ngClass]="{
+            'badge-success': item.status === 'Active',
+            'badge-orange': item.status === 'Pending'
+          }">{{ item.status }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+/* Date Filter Dropdown */
+.date-filter-wrapper {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--space-sm);
+  width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-hover);
+}
+
+.dropdown-arrow {
+  font-size: 1.2rem;
+  margin-left: 4px;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.summary-card {
+  padding: var(--space-lg);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.card-title {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.card-change {
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-change.positive {
+  color: #00E676;
+}
+
+.card-change.negative {
+  color: #FF5252;
+}
+
+/* Report List */
+.report-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.report-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.report-item:last-child {
+  border-bottom: none;
+}
+
+.report-item:hover {
+  background: var(--bg-hover);
+}
+
+.report-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-elevated);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  min-width: 50px;
+}
+
+.date-day {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.date-month {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.report-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-type {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.report-title {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.report-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.report-change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.report-status {
+  display: flex;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+  }
+  
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .report-item {
+    grid-template-columns: auto 1fr;
+    gap: var(--space-md);
+  }
+  
+  .report-value,
+  .report-change,
+  .report-status {
+    grid-column: 2;
+  }
+}
+</style>

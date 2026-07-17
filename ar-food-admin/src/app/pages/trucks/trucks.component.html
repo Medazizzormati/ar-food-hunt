@@ -1,0 +1,61 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>Food Truck Management</h1>
+      <p class="text-muted">Review, approve, and manage registered food trucks.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="exportToCSV()">
+        <span class="material-symbols-rounded">download</span> Export CSV
+      </button>
+      <button class="btn btn-primary" (click)="openTruckDialog()">
+        <span class="material-symbols-rounded">add</span> Register New Truck
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Truck Name</th>
+            <th>Owner</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let truck of trucks">
+            <td><span class="fw-600">{{ truck.name }}</span></td>
+            <td>{{ truck.owner }}</td>
+            <td><span class="badge badge-purple">{{ truck.category }}</span></td>
+            <td>{{ truck.location }}</td>
+            <td>
+              <span class="badge" 
+                    [ngClass]="{
+                      'badge-success': truck.status === 'Active', 
+                      'badge-danger': truck.status === 'Suspended',
+                      'badge-orange': truck.status === 'Pending Approval'
+                    }">
+                {{ truck.status }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-sm">
+                <button class="btn-icon" *ngIf="truck.status === 'Pending Approval'" (click)="approveTruck(truck)">
+                  <span class="material-symbols-rounded" style="color: var(--color-success)">check_circle</span>
+                </button>
+                <button class="btn-icon" (click)="openTruckDialog(truck)">
+                  <span class="material-symbols-rounded">edit</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

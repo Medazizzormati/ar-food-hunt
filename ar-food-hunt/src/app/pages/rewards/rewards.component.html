@@ -1,0 +1,317 @@
+<!-- REWARDS PAGE: Full-width responsive -->
+<div class="page animate-in">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>🎁 Rewards</h1>
+      <p class="text-muted">Redeem your coins for exclusive deals and experiences.</p>
+    </div>
+    <div class="page-header-right">
+      <div class="coin-pill">
+        <span class="material-symbols-rounded">monetization_on</span>
+        <span>1,250 Coins</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-nav mb-xl">
+    <button class="tab-btn" *ngFor="let t of tabs" [class.active]="activeTab === t" (click)="activeTab = t">{{ t }}</button>
+  </div>
+
+  <!-- AVAILABLE REWARDS -->
+  <div *ngIf="activeTab === 'Rewards'">
+    <div class="section-header mb-lg">
+      <h2>Available Rewards</h2>
+      <span class="badge badge-orange">{{ availableRewards.length }} available</span>
+    </div>
+
+    <div class="rewards-grid mb-xl">
+      <div class="reward-card card animate-in" *ngFor="let r of availableRewards" [ngClass]="r.accent">
+        <div class="rc-top">
+          <div class="rc-icon">{{ r.icon }}</div>
+          <span class="badge" [ngClass]="r.badgeClass">{{ r.type }}</span>
+        </div>
+        <h3 class="rc-name">{{ r.name }}</h3>
+        <p class="rc-truck text-muted">{{ r.truck }}</p>
+        <div class="rc-cost">
+          <span class="material-symbols-rounded">monetization_on</span>
+          {{ r.cost }} Coins
+        </div>
+        <div class="rc-footer">
+          <div class="rc-progress">
+            <div class="progress-bar-track" style="height:5px">
+              <div class="progress-bar-fill" [style.width]="(1250/r.cost*100 > 100 ? 100 : 1250/r.cost*100) + '%'" [class.teal]="1250 >= r.cost"></div>
+            </div>
+            <span class="rc-progress-txt">{{ 1250 >= r.cost ? 'Ready!' : (1250 + '/' + r.cost) }}</span>
+          </div>
+          <button class="btn btn-primary" [disabled]="1250 < r.cost || r.locked" style="margin-top:12px;width:100%;justify-content:center">
+            {{ r.locked ? '🔒 Locked' : 1250 < r.cost ? 'Need More Coins' : 'Redeem Now' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE COUPONS -->
+  <div *ngIf="activeTab === 'Coupons'">
+    <div class="section-header mb-lg">
+      <h2>Active Coupons</h2>
+      <span class="badge badge-teal">{{ coupons.length }} active</span>
+    </div>
+    <div class="coupons-list">
+      <div class="coupon-card card animate-in" *ngFor="let c of coupons">
+        <div class="coupon-left">
+          <div class="coupon-emoji">{{ c.emoji }}</div>
+          <div class="coupon-info">
+            <h3 class="coupon-title">{{ c.title }}</h3>
+            <p class="coupon-sub text-muted">{{ c.sub }}</p>
+            <div class="coupon-expiry">
+              <span class="material-symbols-rounded">schedule</span>
+              Expires {{ c.expiry }}
+            </div>
+          </div>
+        </div>
+        <div class="coupon-dashes"></div>
+        <div class="coupon-qr">
+          <div class="qr-box">
+            <span class="material-symbols-rounded">qr_code_2</span>
+          </div>
+          <span style="font-size:0.65rem;color:var(--text-muted)">Scan at truck</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIP Section -->
+  <div class="vip-card animate-in">
+    <div class="vip-bg"></div>
+    <div class="vip-inner">
+      <div class="vip-left">
+        <div class="vip-crown">👑</div>
+        <div>
+          <h2 style="letter-spacing:4px;margin-bottom:8px">VIP PASS</h2>
+          <p style="opacity:0.8;font-size:0.9rem">Unlimited access · Exclusive events · 2× rewards every day</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);box-shadow:none">
+        Upgrade Now
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.coin-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,215,0,0.12);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-weight: 700;
+  color: #FFD700;
+  font-size: 1rem;
+}
+
+.coin-pill .material-symbols-rounded { color: #FFD700; font-size: 1.3rem; }
+
+.mb-xl { margin-bottom: var(--space-xl); }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+/* Tabs */
+.tab-nav { display: flex; gap: var(--space-sm); }
+
+.tab-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 9px 22px;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: var(--grad-orange-purple);
+  border-color: transparent;
+  color: white;
+  font-weight: 700;
+}
+
+/* Rewards grid */
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.reward-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: all 0.25s ease;
+}
+
+.reward-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.reward-card.accent-orange { border-left: 3px solid var(--color-primary); }
+.reward-card.accent-teal { border-left: 3px solid var(--color-tertiary); }
+.reward-card.accent-purple { border-left: 3px solid var(--color-secondary); }
+.reward-card.accent-gold { border-left: 3px solid #FFD700; }
+
+.rc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.rc-icon {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.rc-name { font-size: 1rem; margin-bottom: 4px; }
+.rc-truck { font-size: 0.78rem; margin-bottom: var(--space-sm); }
+
+.rc-cost {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: var(--space-sm);
+}
+
+.rc-cost .material-symbols-rounded { font-size: 1rem; }
+
+.rc-progress-txt { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+
+/* Coupons */
+.coupons-list { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.coupon-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+}
+
+.coupon-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex: 1;
+}
+
+.coupon-emoji { font-size: 2.4rem; }
+
+.coupon-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.coupon-sub { font-size: 0.8rem; margin-bottom: 6px; }
+
+.coupon-expiry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.coupon-expiry .material-symbols-rounded { font-size: 0.9rem; }
+
+.coupon-dashes {
+  width: 2px;
+  height: 80px;
+  background: repeating-linear-gradient(to bottom, var(--border-color) 0px, var(--border-color) 8px, transparent 8px, transparent 16px);
+  flex-shrink: 0;
+}
+
+.coupon-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.qr-box {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-box .material-symbols-rounded { color: #000; font-size: 2.5rem; }
+
+/* VIP */
+.vip-card {
+  position: relative;
+  margin-top: var(--space-xl);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.vip-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #4A0080, #7B1FA2, #9C27B0);
+}
+
+.vip-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xl) var(--space-2xl);
+  gap: var(--space-xl);
+}
+
+.vip-left { display: flex; align-items: center; gap: var(--space-xl); }
+.vip-crown { font-size: 3rem; }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 1100px) { .rewards-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px)  { .rewards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px)  {
+  .coupon-card { flex-direction: column; align-items: flex-start; }
+  .coupon-dashes { display: none; }
+  .vip-inner { flex-direction: column; text-align: center; }
+  .vip-left { flex-direction: column; }
+}
+</style>

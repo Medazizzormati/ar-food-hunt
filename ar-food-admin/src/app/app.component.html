@@ -1,0 +1,127 @@
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.open]="mobileMenuOpen">
+    <div class="sidebar-brand">
+      <div class="brand-icon">👑</div>
+      <span class="brand-text">Food Hunt Admin</span>
+    </div>
+
+    <div class="sidebar-scroll">
+      <nav class="sidebar-nav">
+        <!-- Main Section -->
+        <div class="nav-group-label">Overview</div>
+        <a *ngFor="let item of navMain" [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exact}" class="nav-item">
+          <span class="material-symbols-rounded nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+
+        <!-- Management Section -->
+        <div class="nav-group-label">Management</div>
+        <a *ngFor="let item of navManage" [routerLink]="item.route" routerLinkActive="active" class="nav-item">
+          <span class="material-symbols-rounded nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+          <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+        </a>
+
+        <a [routerLink]="'/reports'" routerLinkActive="active" class="nav-item">
+          <span class="material-symbols-rounded nav-icon">assessment</span>
+          <span class="nav-label">Reports</span>
+        </a>
+
+        <!-- Events & Game Section -->
+        <div class="nav-group-label">Game Content</div>
+        <a *ngFor="let item of navGame" [routerLink]="item.route" routerLinkActive="active" class="nav-item">
+          <span class="material-symbols-rounded nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <a [routerLink]="'/settings'" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-rounded nav-icon">settings</span>
+        <span class="nav-label">Settings</span>
+      </a>
+      <div class="admin-profile mt-sm">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=06B6D4" alt="Admin">
+        <div class="admin-info">
+          <div class="admin-name">Sarah Connor</div>
+          <div class="admin-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" *ngIf="mobileMenuOpen" (click)="mobileMenuOpen = false"></div>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+    <!-- TOP NAVIGATION -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn-icon mobile-menu-btn" (click)="mobileMenuOpen = !mobileMenuOpen">
+          <span class="material-symbols-rounded">menu</span>
+        </button>
+        <div class="search-box">
+          <span class="material-symbols-rounded">search</span>
+          <input type="text" placeholder="Search users, food trucks, or events (Ctrl+K)">
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- New Event Action -->
+        <button class="btn btn-primary" (click)="openNewEventDialog()">
+          <span class="material-symbols-rounded">add</span> New Event
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="icon-btn" (click)="toggleTheme()" [title]="isLightTheme ? 'Switch to Dark Mode' : 'Switch to Light Mode'">
+          <span class="material-symbols-rounded">{{ isLightTheme ? 'dark_mode' : 'light_mode' }}</span>
+        </button>
+
+        <!-- Notification Bell -->
+        <div style="position: relative;">
+          <button class="icon-btn" (click)="toggleNotifications()">
+            <span class="material-symbols-rounded">notifications</span>
+            <span class="notif-dot" *ngIf="hasUnreadNotifications"></span>
+          </button>
+          
+          <!-- Notifications Dropdown -->
+          <div class="dropdown-menu" *ngIf="showNotifications">
+            <div class="dropdown-header">
+              <span class="fw-bold">Notifications</span>
+              <button class="text-btn" (click)="markAllRead()">Mark all read</button>
+            </div>
+            <div class="dropdown-item" *ngFor="let n of notifications">
+              <span class="material-symbols-rounded" [ngStyle]="{color: getNotificationColor(n.color)}">{{ n.icon }}</span>
+              <div>
+                <div class="fw-bold">{{ n.title }}</div>
+                <div class="text-sm text-muted">{{ n.message }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Button (Direct SignOut) -->
+        <div class="profile-wrapper">
+          <button class="avatar-btn" (click)="signOut()">
+            <div class="avatar">
+              <span class="material-symbols-rounded">person</span>
+            </div>
+            <div class="user-info">
+              <span class="user-name">Admin User</span>
+              <span class="user-role">Super Admin</span>
+            </div>
+            <span class="material-symbols-rounded" style="color: var(--text-muted); font-size: 20px;">logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

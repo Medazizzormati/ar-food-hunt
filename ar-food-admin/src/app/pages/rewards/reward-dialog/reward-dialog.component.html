@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Reward' : 'Create New Reward' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Reward Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g. Free Burger Coupon">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Point Cost</mat-label>
+      <input matInput type="number" formControlName="cost">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Active">Active</mat-option>
+        <mat-option value="Inactive">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="save()">
+    {{ isEditMode ? 'Save Changes' : 'Create Reward' }}
+  </button>
+</mat-dialog-actions>

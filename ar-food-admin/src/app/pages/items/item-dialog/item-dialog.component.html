@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Item' : 'Create New Item' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Item Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g. Golden Spatula">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="Ingredient">Ingredient</mat-option>
+        <mat-option value="Consumable">Consumable</mat-option>
+        <mat-option value="Cosmetic">Cosmetic</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rarity</mat-label>
+      <mat-select formControlName="rarity">
+        <mat-option value="Common">Common</mat-option>
+        <mat-option value="Rare">Rare</mat-option>
+        <mat-option value="Epic">Epic</mat-option>
+        <mat-option value="Legendary">Legendary</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="save()">
+    {{ isEditMode ? 'Save Changes' : 'Create Item' }}
+  </button>
+</mat-dialog-actions>

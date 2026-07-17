@@ -1,0 +1,208 @@
+<div class="page animate-in">
+  <div class="page-header">
+    <div>
+      <h1>⚙️ Settings</h1>
+      <p class="text-muted">Manage your admin panel preferences and configuration.</p>
+    </div>
+  </div>
+
+  <div class="settings-container">
+    <div class="settings-section" *ngFor="let category of categories">
+      <div class="section-header">
+        <h2>{{ category }}</h2>
+      </div>
+      
+      <div class="settings-list">
+        <div class="setting-item" *ngFor="let item of getSettingsByCategory(category)">
+          <div class="setting-info">
+            <div class="setting-title">{{ item.title }}</div>
+            <div class="setting-description">{{ item.description }}</div>
+          </div>
+          
+          <div class="setting-control">
+            <!-- Toggle Switch -->
+            <div *ngIf="item.type === 'toggle'" class="toggle-switch" [class.active]="item.value" (click)="toggleSetting(item)">
+              <div class="toggle-slider"></div>
+            </div>
+            
+            <!-- Select Dropdown -->
+            <div *ngIf="item.type === 'select'" class="select-wrapper">
+              <select [(ngModel)]="item.value" (change)="selectOption(item, item.value)" class="setting-select">
+                <option *ngFor="let option of item.options" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+            
+            <!-- Button -->
+            <button *ngIf="item.type === 'button'" class="btn btn-secondary" (click)="buttonAction(item)">
+              {{ item.value }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+
+.page-header {
+  margin-bottom: var(--space-xl);
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.settings-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.section-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:hover {
+  background: var(--bg-hover);
+}
+
+.setting-info {
+  flex: 1;
+  padding-right: var(--space-lg);
+}
+
+.setting-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.setting-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.setting-control {
+  flex-shrink: 0;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  width: 52px;
+  height: 28px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-color);
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-switch.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.toggle-slider {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(24px);
+}
+
+/* Select Dropdown */
+.select-wrapper {
+  min-width: 150px;
+}
+
+.setting-select {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.setting-select:focus {
+  border-color: var(--color-primary);
+}
+
+.setting-select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .setting-control {
+    width: 100%;
+  }
+  
+  .select-wrapper {
+    min-width: 100%;
+  }
+  
+  .setting-select {
+    width: 100%;
+  }
+}
+</style>

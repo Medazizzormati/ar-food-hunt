@@ -1,0 +1,373 @@
+<!-- LEADERBOARD PAGE: Full-width responsive -->
+<div class="page animate-in">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>🏆 Leaderboard</h1>
+      <p class="text-muted">See how you rank against other food hunters this week.</p>
+    </div>
+    <div class="page-header-right">
+      <div class="time-tabs">
+        <button class="filter-chip" *ngFor="let t of timePeriods" [class.active]="activePeriod === t" (click)="activePeriod = t">{{ t }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="cat-tabs mb-xl">
+    <button class="cat-tab" *ngFor="let c of categories" [class.active]="activeCategory === c" (click)="activeCategory = c">{{ c }}</button>
+  </div>
+
+  <!-- Podium + Table layout -->
+  <div class="lb-layout">
+
+    <!-- Podium (left) -->
+    <div class="podium-section card animate-in">
+      <h3 style="margin-bottom:var(--space-xl);text-align:center">🥇 Top 3 This Week</h3>
+
+      <div class="podium">
+        <!-- 2nd -->
+        <div class="podium-player second">
+          <div class="podium-avatar">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=9C27B0" alt="2nd">
+            <div class="p-rank silver">2</div>
+          </div>
+          <div class="p-name">Luna</div>
+          <div class="p-xp">3,280 XP</div>
+          <div class="p-stand second-stand"></div>
+        </div>
+
+        <!-- 1st -->
+        <div class="podium-player first">
+          <div class="p-crown">👑</div>
+          <div class="podium-avatar large">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=FF7B00" alt="1st">
+            <div class="p-rank gold">1</div>
+          </div>
+          <div class="p-name">Felix</div>
+          <div class="p-xp text-gradient" style="font-weight:800">4,850 XP</div>
+          <div class="p-stand first-stand"></div>
+        </div>
+
+        <!-- 3rd -->
+        <div class="podium-player third">
+          <div class="podium-avatar">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aria&backgroundColor=00BCD4" alt="3rd">
+            <div class="p-rank bronze">3</div>
+          </div>
+          <div class="p-name">Aria</div>
+          <div class="p-xp">2,100 XP</div>
+          <div class="p-stand third-stand"></div>
+        </div>
+      </div>
+
+      <!-- Personal rank -->
+      <div class="my-rank-card">
+        <span class="material-symbols-rounded">person</span>
+        <div>
+          <div class="my-rank-label">Your Rank</div>
+          <div class="my-rank-val">#6 of 847 players</div>
+        </div>
+        <div class="my-rank-xp">850 XP</div>
+      </div>
+    </div>
+
+    <!-- Full leaderboard table (right) -->
+    <div class="card animate-in lb-table-section">
+      <div class="section-header">
+        <h3>All Rankings</h3>
+        <div class="search-box small">
+          <span class="material-symbols-rounded">search</span>
+          <input type="text" placeholder="Find player...">
+        </div>
+      </div>
+
+      <div class="lb-table">
+        <div class="lb-row header-row">
+          <span class="lb-rank-col">#</span>
+          <span>Player</span>
+          <span>Level</span>
+          <span>Trucks</span>
+          <span>XP</span>
+          <span>Change</span>
+        </div>
+
+        <div class="lb-row" *ngFor="let p of allPlayers; let i = index" [class.me]="p.isMe">
+          <span class="lb-rank-col" [ngClass]="getRankClass(i + 1)">{{ i + 1 }}</span>
+          <div class="lb-player">
+            <img [src]="'https://api.dicebear.com/7.x/avataaars/svg?seed=' + p.name" [alt]="p.name">
+            <div>
+              <div class="lb-pname">{{ p.name }} <span *ngIf="p.isMe" class="badge badge-orange" style="font-size:0.6rem">YOU</span></div>
+              <div class="lb-ptitle">{{ p.title }}</div>
+            </div>
+          </div>
+          <span class="lb-cell"><span class="badge badge-purple">Lvl {{ p.level }}</span></span>
+          <span class="lb-cell">{{ p.trucks }}</span>
+          <span class="lb-cell lb-xp">{{ p.xp | number }}</span>
+          <span class="lb-cell" [ngClass]="p.change > 0 ? 'change-up' : 'change-down'">
+            <span class="material-symbols-rounded">{{ p.change > 0 ? 'arrow_drop_up' : 'arrow_drop_down' }}</span>
+            {{ p.change > 0 ? '+' : '' }}{{ p.change }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+.page { animation: fadeInUp 0.4s ease-out; }
+.mb-xl { margin-bottom: var(--space-xl); }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.time-tabs, .cat-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.cat-tabs { overflow-x: auto; scrollbar-width: none; }
+.cat-tabs::-webkit-scrollbar { display: none; }
+
+.filter-chip, .cat-tab {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 7px 16px;
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-chip.active, .cat-tab.active,
+.filter-chip:hover, .cat-tab:hover {
+  background: rgba(255,123,0,0.12);
+  border-color: rgba(255,123,0,0.4);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Layout: podium left, table right */
+.lb-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* Podium */
+.podium-section { padding: var(--space-xl); }
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.podium-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.p-crown { font-size: 1.8rem; margin-bottom: -4px; }
+
+.podium-avatar {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.podium-avatar.large { width: 72px; height: 72px; }
+
+.podium-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.15);
+  object-fit: cover;
+}
+
+.first .podium-avatar img { border-color: #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+.second .podium-avatar img { border-color: #C0C0C0; }
+.third .podium-avatar img { border-color: #CD7F32; }
+
+.p-rank {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  border: 2px solid var(--bg-card);
+}
+
+.p-rank.gold { background: #FFD700; color: #000; }
+.p-rank.silver { background: #C0C0C0; color: #000; }
+.p-rank.bronze { background: #CD7F32; color: #fff; }
+
+.p-name { font-size: 0.85rem; font-weight: 700; }
+.p-xp { font-size: 0.72rem; color: var(--text-muted); }
+.first .p-xp { font-size: 0.8rem; color: var(--text-primary); }
+
+.p-stand {
+  width: 100%;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.first-stand { height: 60px; background: linear-gradient(180deg, rgba(255,215,0,0.5), rgba(255,215,0,0.1)); border: 1px solid rgba(255,215,0,0.3); }
+.second-stand { height: 44px; background: linear-gradient(180deg, rgba(192,192,192,0.3), rgba(192,192,192,0.05)); border: 1px solid rgba(192,192,192,0.2); }
+.third-stand { height: 30px; background: linear-gradient(180deg, rgba(205,127,50,0.3), rgba(205,127,50,0.05)); border: 1px solid rgba(205,127,50,0.2); }
+
+.my-rank-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: rgba(255,123,0,0.08);
+  border: 1px solid rgba(255,123,0,0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.my-rank-card .material-symbols-rounded { color: var(--color-primary); font-size: 1.4rem; }
+.my-rank-card > div { flex: 1; }
+.my-rank-label { font-size: 0.72rem; color: var(--text-muted); }
+.my-rank-val { font-size: 0.95rem; font-weight: 700; }
+.my-rank-xp { font-size: 1rem; font-weight: 800; font-family: var(--font-display); color: var(--color-primary); }
+
+/* Table */
+.lb-table-section { padding: var(--space-xl); }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.search-box.small {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 7px 12px;
+}
+
+.search-box.small input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  outline: none;
+  width: 140px;
+}
+
+.search-box .material-symbols-rounded { color: var(--text-muted); font-size: 1rem; }
+
+.lb-table { display: flex; flex-direction: column; gap: 2px; }
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px 80px 100px 80px;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 10px var(--space-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  transition: background 0.15s;
+}
+
+.lb-row:hover:not(.header-row) { background: var(--glass-bg); }
+
+.header-row {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.lb-row.me {
+  background: rgba(255,123,0,0.07) !important;
+  border: 1px solid rgba(255,123,0,0.2);
+}
+
+.lb-rank-col {
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.lb-rank-col.rank-1 { color: #FFD700; }
+.lb-rank-col.rank-2 { color: #C0C0C0; }
+.lb-rank-col.rank-3 { color: #CD7F32; }
+
+.lb-player {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.lb-player img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.lb-pname { font-weight: 600; font-size: 0.875rem; display: flex; align-items: center; gap: 6px; }
+.lb-ptitle { font-size: 0.68rem; color: var(--text-muted); }
+
+.lb-cell { text-align: center; }
+.lb-xp { font-weight: 700; font-family: var(--font-display); color: var(--color-primary); text-align: right; }
+
+.change-up { color: var(--color-success); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+.change-down { color: var(--color-danger); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+.change-up .material-symbols-rounded,
+.change-down .material-symbols-rounded { font-size: 1.2rem; }
+
+@media (max-width: 1100px) {
+  .lb-layout { grid-template-columns: 1fr; }
+  .lb-row { grid-template-columns: 40px 1fr 80px 80px 100px; }
+  .lb-row .lb-cell:last-child { display: none; }
+}
+
+@media (max-width: 768px) {
+  .lb-row { grid-template-columns: 32px 1fr 100px; }
+  .lb-row > span:nth-child(3), .lb-row > span:nth-child(4) { display: none; }
+  .page-header { flex-direction: column; }
+}
+</style>

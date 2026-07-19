@@ -7,6 +7,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { RewardsComponent } from './pages/rewards/rewards.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { CollectionsComponent } from './pages/collections/collections.component';
+import { EventsComponent } from './pages/events/events.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: 'explore', component: MapComponent },
   { path: 'hunt', component: HuntComponent },
   { path: 'inventory', component: InventoryComponent },
+  { path: 'events', component: EventsComponent },
   { path: 'rewards', component: RewardsComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'leaderboard', component: LeaderboardComponent },

@@ -26,6 +26,7 @@ export class AppComponent {
     { label: 'Explore', icon: 'map', route: '/explore' },
     { label: 'Hunt Mode', icon: 'camera', route: '/hunt', badge: 'LIVE' },
     { label: 'Inventory', icon: 'inventory_2', route: '/inventory' },
+    { label: 'Events', icon: 'event', route: '/events' },
     { label: 'Collections', icon: 'collections_bookmark', route: '/collections' },
     { label: 'Rewards', icon: 'redeem', route: '/rewards' },
     { label: 'Leaderboard', icon: 'leaderboard', route: '/leaderboard' },

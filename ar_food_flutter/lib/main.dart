@@ -52,7 +52,6 @@ class _MainLayoutState extends State<MainLayout> {
     const InventoryScreen(),
     const EventsScreen(),
     const ProfileScreen(),
-    const SettingsScreen(),
   ];
 
   @override
@@ -113,10 +112,6 @@ class _MainLayoutState extends State<MainLayout> {
             const BottomNavigationBarItem(
               icon: Icon(Icons.person_rounded),
               label: 'Profile',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
             ),
           ],
         ),

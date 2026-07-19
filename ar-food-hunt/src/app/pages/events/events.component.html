@@ -1,0 +1,105 @@
+<!-- EVENTS PAGE: Full-width responsive -->
+<div class="page animate-in">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>🎉 Live Events</h1>
+      <p class="text-muted">Join events to earn bonus rewards and multipliers.</p>
+    </div>
+  </div>
+
+  <!-- Active Events Section -->
+  <div class="section-header">
+    <h2>Active Events</h2>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card card" *ngFor="let event of activeEvents">
+      <div class="event-header">
+        <div class="event-emoji">{{ event.emoji }}</div>
+        <div class="event-info">
+          <h3>{{ event.name }}</h3>
+          <div class="event-meta">
+            <span class="badge badge-success">{{ event.status }}</span>
+            <span class="badge badge-purple">{{ event.multiplier }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="event-description">{{ event.description }}</p>
+      <div class="event-footer">
+        <div class="event-duration">
+          <span class="material-symbols-rounded">schedule</span>
+          {{ event.duration }}
+        </div>
+        <button 
+          class="btn" 
+          [class.btn-primary]="!event.joined"
+          [class.btn-secondary]="event.joined"
+          (click)="joinEvent(event)">
+          {{ event.joined ? 'Leave Event' : 'Join Event' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Events Section -->
+  <div class="section-header">
+    <h2>Upcoming Events</h2>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card card" *ngFor="let event of upcomingEvents">
+      <div class="event-header">
+        <div class="event-emoji">{{ event.emoji }}</div>
+        <div class="event-info">
+          <h3>{{ event.name }}</h3>
+          <div class="event-meta">
+            <span class="badge badge-orange">{{ event.status }}</span>
+            <span class="badge badge-purple">{{ event.multiplier }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="event-description">{{ event.description }}</p>
+      <div class="event-footer">
+        <div class="event-duration">
+          <span class="material-symbols-rounded">schedule</span>
+          {{ event.duration }}
+        </div>
+        <button 
+          class="btn" 
+          [class.btn-primary]="!event.joined"
+          [class.btn-secondary]="event.joined"
+          (click)="joinEvent(event)">
+          {{ event.joined ? 'Leave Event' : 'Join Event' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ended Events Section -->
+  <div class="section-header">
+    <h2>Ended Events</h2>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card card event-ended" *ngFor="let event of endedEvents">
+      <div class="event-header">
+        <div class="event-emoji">{{ event.emoji }}</div>
+        <div class="event-info">
+          <h3>{{ event.name }}</h3>
+          <div class="event-meta">
+            <span class="badge badge-secondary">{{ event.status }}</span>
+            <span class="badge badge-purple">{{ event.multiplier }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="event-description">{{ event.description }}</p>
+      <div class="event-footer">
+        <div class="event-duration">
+          <span class="material-symbols-rounded">schedule</span>
+          {{ event.duration }}
+        </div>
+        <button class="btn btn-secondary" disabled>Event Ended</button>
+      </div>
+    </div>
+  </div>
+</div>

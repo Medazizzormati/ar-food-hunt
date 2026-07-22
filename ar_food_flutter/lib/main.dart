@@ -7,6 +7,7 @@ import 'screens/inventory_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/events_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() {
   runApp(const ARFoodApp());
@@ -28,7 +29,7 @@ class ARFoodApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: currentMode,
           debugShowCheckedModeBanner: false,
-          home: const MainLayout(),
+          home: const OnboardingScreen(),
         );
       },
     );

@@ -63,8 +63,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/events/*/activate").hasAnyRole("MODERATOR", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/events/*/deactivate").hasAnyRole("MODERATOR", "ADMIN")
                         
-                        // Admin-only endpoints
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        // User-specific endpoints (users can access their own data)
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users/*/coins").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users/*/xp").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        
+                        // Admin-only user management
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/achievements/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/achievements/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/achievements/**").hasRole("ADMIN")

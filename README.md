@@ -181,6 +181,14 @@ ar_food/
 - JWT token storage with SharedPreferences
 - Models for User, Event, Collectible, FoodTruck
 - Complete API service layer
+- **Interactive Onboarding** with Lottie animations
+- **Dynamic Inventory System** with:
+  - Category-based filtering (Burgers, Pizza, Dessert, Coffee)
+  - Real-time search functionality
+  - Rarity-based item display
+  - XP and coin rewards tracking
+- **Professional UI** with dark/light theme support
+- **Smooth animations** and transitions
 
 #### Angular Web Apps
 - HTTP client with interceptors
@@ -208,6 +216,7 @@ ar_food/
 - **TypeScript** - Type-safe JavaScript
 - **RxJS** - Reactive programming
 - **HTTP Client** - REST API communication
+- **Lottie** - Animation library for Flutter
 
 ## Setup Instructions
 
@@ -237,6 +246,40 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/ar_food_hunt
 spring.datasource.username=postgres
 spring.datasource.password=postgres
 ```
+
+3. **Automatic Schema Initialization**
+
+The backend automatically initializes the database schema on startup using the `schema.sql` file located at:
+- `ar-food-backend/src/main/resources/schema.sql`
+
+This file contains:
+- **Complete database schema** with all tables and relationships
+- **CRUD queries** for each table (Create, Read, Update, Delete)
+- **Complex queries** for statistics, leaderboards, and geographic searches
+- **Sample data** for testing and development
+- **Indexes** for optimized query performance
+- **Triggers** for automatic timestamp updates
+
+**Database Tables:**
+- `users` - User accounts with roles, coins, XP, levels
+- `events` - Food truck events and festivals
+- `achievements` - Achievement definitions and rewards
+- `user_achievements` - User achievement unlocks
+- `rewards` - Reward definitions (coupons, discounts, items)
+- `user_rewards` - User earned and redeemed rewards
+- `collections` - Themed collectible collections
+- `user_collections` - User collection progress
+- `food_trucks` - Food truck locations and information
+- `collectibles` - AR collectibles at food trucks
+- `user_collectibles` - User collected items
+- `audit_logs` - Security and operation audit trail
+
+**Key Features:**
+- **Automatic timestamp management** with triggers
+- **Geospatial queries** for nearby food trucks
+- **Complex statistical queries** for user analytics
+- **Relationship integrity** with foreign key constraints
+- **Optimized indexes** for common query patterns
 
 ### Backend Setup
 
@@ -331,6 +374,68 @@ The admin dashboard will be available at `http://localhost:4201`
 ### Base URL
 ```
 http://localhost:8080/api
+```
+
+### Database Query Examples
+
+The `schema.sql` file includes comprehensive SQL queries for all operations:
+
+#### User Statistics Query
+```sql
+SELECT 
+    u.id, u.username, u.coins, u.xp, u.level,
+    COUNT(DISTINCT uc.collectible_id) as total_collectibles,
+    COUNT(DISTINCT ua.achievement_id) as total_achievements,
+    COUNT(DISTINCT ur.id) as total_rewards,
+    COUNT(DISTINCT ucol.collection_id) as total_collections_started,
+    SUM(CASE WHEN ucol.is_completed = TRUE THEN 1 ELSE 0 END) as total_collections_completed
+FROM users u
+LEFT JOIN user_collectibles uc ON u.id = uc.user_id
+LEFT JOIN user_achievements ua ON u.id = ua.user_id
+LEFT JOIN user_rewards ur ON u.id = ur.user_id
+LEFT JOIN user_collections ucol ON u.id = ucol.user_id
+WHERE u.id = $1
+GROUP BY u.id, u.username, u.coins, u.xp, u.level;
+```
+
+#### Leaderboard Query
+```sql
+SELECT 
+    u.id, u.username, u.xp, u.level,
+    COUNT(DISTINCT uc.collectible_id) as collectibles_count,
+    RANK() OVER (ORDER BY u.xp DESC) as rank
+FROM users u
+LEFT JOIN user_collectibles uc ON u.id = uc.user_id
+GROUP BY u.id, u.username, u.xp, u.level
+ORDER BY u.xp DESC
+LIMIT 10;
+```
+
+#### Nearby Food Trucks Query
+```sql
+SELECT 
+    c.*, ft.name as food_truck_name, ft.category, ft.address,
+    (6371 * acos(cos(radians($1)) * cos(radians(ft.latitude)) * 
+     cos(radians(ft.longitude) - radians($2)) + 
+     sin(radians($1)) * sin(radians(ft.latitude)))) AS distance
+FROM collectibles c
+JOIN food_trucks ft ON c.food_truck_id = ft.id
+WHERE c.is_available = TRUE AND ft.is_active = TRUE
+HAVING distance < $3
+ORDER BY distance, c.rarity;
+```
+
+#### User Inventory with Filters
+```sql
+SELECT uc.*, c.name as collectible_name, c.description, c.rarity, 
+       c.xp_reward, c.coin_reward, c.image_url, ft.name as food_truck_name, ft.category
+FROM user_collectibles uc
+JOIN collectibles c ON uc.collectible_id = c.id
+LEFT JOIN food_trucks ft ON c.food_truck_id = ft.id
+WHERE uc.user_id = $1
+AND ($2 = '' OR ft.category = $2)
+AND ($3 = '' OR LOWER(c.name) LIKE LOWER('%' || $3 || '%'))
+ORDER BY c.rarity, c.name;
 ```
 
 ### Authentication Endpoints
@@ -885,6 +990,16 @@ server.port=8080
 spring.datasource.url=jdbc:postgresql://localhost:5432/ar_food_hunt
 spring.datasource.username=postgres
 spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.mode=always
+spring.sql.init.schema-locations=classpath:schema.sql
 
 # JWT Configuration
 jwt.secret=your-secret-key-here
@@ -895,11 +1010,42 @@ rate.limit.requests=100
 rate.limit.window=60000
 
 # CORS
-cors.allowed-origins=http://localhost:4200,http://localhost:3000
+cors.allowed-origins=http://localhost:4200,http://localhost:3000,http://localhost:8080
 
 # Logging
 logging.level.com.arfood=DEBUG
 logging.level.org.springframework.security=DEBUG
+```
+
+### Flutter Configuration
+
+Edit `ar_food_flutter/lib/services/api_service.dart` to configure the base URL:
+
+```dart
+class ApiService {
+  static const String baseUrl = 'http://localhost:8080/api';
+  // ... rest of the service
+}
+```
+
+### Angular Configuration
+
+Edit environment files in Angular apps:
+
+**ar-food-hunt/src/environments/environment.ts:**
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api'
+};
+```
+
+**ar-food-admin/src/environments/environment.ts:**
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api'
+};
 ```
 
 ## Troubleshooting
@@ -909,7 +1055,14 @@ logging.level.org.springframework.security=DEBUG
 **Database Connection Failed**
 - Ensure PostgreSQL is running
 - Check database credentials in application.properties
-- Verify database exists
+- Verify database exists: `CREATE DATABASE ar_food_hunt;`
+- Check PostgreSQL is accepting connections on port 5432
+
+**Schema Initialization Failed**
+- Verify schema.sql file exists in `src/main/resources/`
+- Check `spring.sql.init.mode=always` in application.properties
+- Ensure database user has CREATE TABLE privileges
+- Check SQL syntax in schema.sql file
 
 **JWT Token Invalid**
 - Check token expiration time
@@ -925,6 +1078,19 @@ logging.level.org.springframework.security=DEBUG
 - Verify CORS configuration in SecurityConfig
 - Check allowed origins in application.properties
 - Ensure frontend URL is in allowed origins list
+- Include Flutter port (8080) in CORS configuration
+
+**Flutter App Not Connecting to Backend**
+- Verify backend is running on http://localhost:8080
+- Check ApiService baseUrl in Flutter app
+- Ensure CORS allows Flutter origin
+- Check network connectivity and firewall settings
+
+**Lottie Animations Not Loading**
+- Verify Lottie package is in pubspec.yaml
+- Check internet connectivity for network animations
+- Consider using local Lottie files for offline support
+- Verify animation URLs are valid and accessible
 
 ## License
 

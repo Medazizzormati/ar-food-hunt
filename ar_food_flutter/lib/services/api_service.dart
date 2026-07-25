@@ -137,7 +137,43 @@ class ApiService {
       body: jsonEncode(eventData),
     );
   }
-  
+
+  static Future<http.Response> getInactiveEvents() async {
+    return http.get(
+      Uri.parse('$baseUrl/events/inactive'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> updateEvent(Long id, Map<String, dynamic> eventData) async {
+    return http.put(
+      Uri.parse('$baseUrl/events/$id'),
+      headers: _getHeaders(),
+      body: jsonEncode(eventData),
+    );
+  }
+
+  static Future<http.Response> activateEvent(Long id) async {
+    return http.post(
+      Uri.parse('$baseUrl/events/$id/activate'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> deactivateEvent(Long id) async {
+    return http.post(
+      Uri.parse('$baseUrl/events/$id/deactivate'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> deleteEvent(Long id) async {
+    return http.delete(
+      Uri.parse('$baseUrl/events/$id'),
+      headers: _getHeaders(),
+    );
+  }
+
   // Achievement endpoints
   static Future<http.Response> getAchievements() async {
     return http.get(
@@ -216,6 +252,13 @@ class ApiService {
   static Future<http.Response> collectCollectible(Long collectibleId, Long userId) async {
     return http.post(
       Uri.parse('$baseUrl/collectibles/$collectibleId/collect/$userId'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> getCollectiblesByFoodTruck(Long foodTruckId) async {
+    return http.get(
+      Uri.parse('$baseUrl/collectibles/foodtruck/$foodTruckId'),
       headers: _getHeaders(),
     );
   }

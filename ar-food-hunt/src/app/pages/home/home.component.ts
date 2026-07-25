@@ -18,17 +18,17 @@ export class HomeComponent {
   ];
 
   nearbyTrucks = [
-    { name: 'Burger Bliss', emoji: '🍔', distance: '50m away', status: 'Active Event', badgeClass: 'badge-orange' },
-    { name: 'Taco Trek', emoji: '🌮', distance: '120m away', status: 'Open', badgeClass: 'badge-success' },
-    { name: 'Pizza Planet', emoji: '🍕', distance: '200m away', status: 'Open', badgeClass: 'badge-success' },
-    { name: 'Ice Cream Van', emoji: '🍦', distance: '350m away', status: 'Closed', badgeClass: 'badge-danger' },
+    { name: 'Burger Bliss', icon: 'fastfood', iconColor: '#FF7B00', distance: '50m away', status: 'Active Event', badgeClass: 'badge-orange' },
+    { name: 'Taco Trek', icon: 'restaurant', iconColor: '#10B981', distance: '120m away', status: 'Open', badgeClass: 'badge-success' },
+    { name: 'Pizza Planet', icon: 'local_pizza', iconColor: '#EF4444', distance: '200m away', status: 'Open', badgeClass: 'badge-success' },
+    { name: 'Ice Cream Van', icon: 'icecream', iconColor: '#8B5CF6', distance: '350m away', status: 'Closed', badgeClass: 'badge-danger' },
   ];
 
   activities = [
-    { icon: '🍔', desc: 'Collected Classic Burger at Burger Bliss', time: '5 minutes ago' },
-    { icon: '🎟️', desc: 'Found Golden Ticket! Rare drop!', time: '12 minutes ago' },
-    { icon: '🏆', desc: 'Earned Burger Master badge', time: '1 hour ago' },
-    { icon: '🌮', desc: 'Visited Taco Trek for the first time', time: '2 hours ago' },
-    { icon: '🪙', desc: 'Redeemed 50 coins reward', time: '3 hours ago' },
+    { icon: 'fastfood', desc: 'Collected Classic Burger at Burger Bliss', time: '5 minutes ago' },
+    { icon: 'confirmation_number', desc: 'Found Golden Ticket! Rare drop!', time: '12 minutes ago' },
+    { icon: 'emoji_events', desc: 'Earned Burger Master badge', time: '1 hour ago' },
+    { icon: 'restaurant', desc: 'Visited Taco Trek for the first time', time: '2 hours ago' },
+    { icon: 'paid', desc: 'Redeemed 50 coins reward', time: '3 hours ago' },
   ];
 }

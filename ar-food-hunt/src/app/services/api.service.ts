@@ -77,7 +77,27 @@ export class ApiService {
   createEvent(eventData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/events`, eventData, { headers: this.getHeaders() });
   }
-  
+
+  getInactiveEvents(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/events/inactive`, { headers: this.getHeaders() });
+  }
+
+  updateEvent(id: number, eventData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/events/${id}`, eventData, { headers: this.getHeaders() });
+  }
+
+  activateEvent(id: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/events/${id}/activate`, {}, { headers: this.getHeaders() });
+  }
+
+  deactivateEvent(id: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/events/${id}/deactivate`, {}, { headers: this.getHeaders() });
+  }
+
+  deleteEvent(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/events/${id}`, { headers: this.getHeaders() });
+  }
+
   // Achievement endpoints
   getAchievements(): Observable<any> {
     return this.http.get(`${this.baseUrl}/achievements`, { headers: this.getHeaders() });
@@ -125,5 +145,9 @@ export class ApiService {
   
   collectCollectible(collectibleId: number, userId: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/collectibles/${collectibleId}/collect/${userId}`, {}, { headers: this.getHeaders() });
+  }
+
+  getCollectiblesByFoodTruck(foodTruckId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/collectibles/foodtruck/${foodTruckId}`, { headers: this.getHeaders() });
   }
 }

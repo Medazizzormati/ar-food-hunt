@@ -1,37 +1,31 @@
 import 'package:flutter/material.dart';
-import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
-import 'screens/explore_screen.dart';
-import 'screens/hunt_screen.dart';
-import 'screens/inventory_screen.dart';
-import 'screens/profile_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/events_screen.dart';
-import 'screens/onboarding_screen.dart';
+import 'core/theme/app_theme.dart';
+import 'core/constants/app_constants.dart';
+import 'features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'features/home/presentation/screens/home_screen.dart';
+import 'features/explore/presentation/screens/explore_screen.dart';
+import 'features/hunt/presentation/screens/hunt_screen.dart';
+import 'features/inventory/presentation/screens/inventory_screen.dart';
+import 'features/profile/presentation/screens/profile_screen.dart';
+import 'features/settings/presentation/screens/settings_screen.dart';
+import 'features/events/presentation/screens/events_screen.dart';
 
 void main() {
   runApp(const ARFoodApp());
 }
 
 class ARFoodApp extends StatelessWidget {
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
-
   const ARFoodApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (_, ThemeMode currentMode, __) {
-        return MaterialApp(
-          title: 'AR Food Hunt',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: currentMode,
-          debugShowCheckedModeBanner: false,
-          home: const OnboardingScreen(),
-        );
-      },
+    return MaterialApp(
+      title: AppConstants.appName,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      home: const OnboardingScreen(),
     );
   }
 }

@@ -4,16 +4,16 @@
   <!-- Page Header -->
   <div class="page-header">
     <div class="page-header-left">
-      <h1>Welcome back, <span class="text-gradient">Explorer!</span> 👋</h1>
+      <h1>Welcome back, <span class="text-gradient">Explorer!</span></h1>
       <p class="text-muted">Ready for your next food adventure? Here's your daily overview.</p>
     </div>
     <div class="page-header-right">
       <a routerLink="/hunt" class="btn btn-primary">
-        <span class="material-symbols-rounded">camera</span>
+        <span class="material-symbols-rounded">camera_alt</span>
         Start Hunt
       </a>
       <a routerLink="/explore" class="btn btn-secondary">
-        <span class="material-symbols-rounded">map</span>
+        <span class="material-symbols-rounded">explore</span>
         Explore Map
       </a>
     </div>
@@ -85,12 +85,14 @@
     <div class="event-banner card animate-in">
       <div class="event-bg"></div>
       <div class="event-content">
-        <span class="badge badge-danger" style="margin-bottom:12px">🔴 LIVE EVENT</span>
-        <h2>🍔 Summer Burger Week</h2>
+        <span class="badge badge-danger" style="margin-bottom:12px">
+          <span class="material-symbols-rounded">fiber_manual_record</span> LIVE EVENT
+        </span>
+        <h2>Summer Burger Week</h2>
         <p>Double XP & Rare Collectibles at all Burger Trucks! Don't miss out on the Golden Burger!</p>
         <div class="event-meta">
           <div class="event-time">
-            <span class="material-symbols-rounded">timer</span>
+            <span class="material-symbols-rounded">schedule</span>
             <span>2 days 14 hours remaining</span>
           </div>
           <button class="btn btn-primary">Join Event</button>
@@ -139,7 +141,9 @@
       </div>
       <div class="truck-list">
         <div class="truck-row" *ngFor="let t of nearbyTrucks">
-          <div class="truck-emoji-box">{{ t.emoji }}</div>
+          <div class="truck-emoji-box">
+            <span class="material-symbols-rounded" [style.color]="t.iconColor">{{ t.icon }}</span>
+          </div>
           <div class="truck-info">
             <div class="truck-name">{{ t.name }}</div>
             <div class="truck-dist">
@@ -158,7 +162,9 @@
       </div>
       <div class="activity-list">
         <div class="activity-item" *ngFor="let a of activities">
-          <div class="activity-icon">{{ a.icon }}</div>
+          <div class="activity-icon">
+            <span class="material-symbols-rounded">{{ a.icon }}</span>
+          </div>
           <div class="activity-info">
             <div class="activity-desc">{{ a.desc }}</div>
             <div class="activity-time">{{ a.time }}</div>
@@ -195,11 +201,21 @@
       </div>
 
       <div class="badges-preview">
-        <div class="badge-dot earned" title="Taco Taster">🌮</div>
-        <div class="badge-dot earned" title="First Scan">📷</div>
-        <div class="badge-dot earned" title="Burger Fan">🍔</div>
-        <div class="badge-dot" title="Coffee Hunter">☕</div>
-        <div class="badge-dot" title="Legend">🏆</div>
+        <div class="badge-dot earned" title="Taco Taster">
+          <span class="material-symbols-rounded">restaurant</span>
+        </div>
+        <div class="badge-dot earned" title="First Scan">
+          <span class="material-symbols-rounded">qr_code_scanner</span>
+        </div>
+        <div class="badge-dot earned" title="Burger Fan">
+          <span class="material-symbols-rounded">fastfood</span>
+        </div>
+        <div class="badge-dot" title="Coffee Hunter">
+          <span class="material-symbols-rounded">coffee</span>
+        </div>
+        <div class="badge-dot" title="Legend">
+          <span class="material-symbols-rounded">emoji_events</span>
+        </div>
       </div>
 
       <a routerLink="/profile" class="btn btn-secondary" style="width:100%;margin-top:12px;justify-content:center">
@@ -356,8 +372,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
   flex-shrink: 0;
+}
+
+.truck-emoji-box .material-symbols-rounded {
+  font-size: 1.5rem;
 }
 
 .truck-info { flex: 1; }
@@ -386,10 +405,19 @@
 .activity-item:last-child { border-bottom: none; }
 
 .activity-icon {
-  font-size: 1.4rem;
   flex-shrink: 0;
   width: 36px;
-  text-align: center;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-icon .material-symbols-rounded {
+  font-size: 1.2rem;
+  color: var(--color-primary);
 }
 
 .activity-desc { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
@@ -442,10 +470,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
   filter: grayscale(1);
   opacity: 0.35;
   transition: all 0.2s;
+}
+
+.badge-dot .material-symbols-rounded {
+  font-size: 1.2rem;
+  color: var(--color-primary);
 }
 
 .badge-dot.earned {

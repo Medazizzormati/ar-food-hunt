@@ -210,4 +210,25 @@ export class ApiService {
   deleteCollectible(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/collectibles/${id}`, { headers: this.getHeaders() });
   }
+  
+  // Parks endpoints
+  getParks(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/parks`, { headers: this.getHeaders() });
+  }
+  
+  getParkById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/parks/${id}`, { headers: this.getHeaders() });
+  }
+  
+  createPark(parkData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/parks`, parkData, { headers: this.getHeaders() });
+  }
+  
+  updatePark(id: number, parkData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/parks/${id}`, parkData, { headers: this.getHeaders() });
+  }
+  
+  deletePark(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/parks/${id}`, { headers: this.getHeaders() });
+  }
 }

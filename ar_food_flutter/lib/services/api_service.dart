@@ -256,6 +256,44 @@ class ApiService {
     );
   }
 
+  // Parks endpoints
+  static Future<http.Response> getParks() async {
+    return http.get(
+      Uri.parse('$baseUrl/parks'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> getParkById(Long id) async {
+    return http.get(
+      Uri.parse('$baseUrl/parks/$id'),
+      headers: _getHeaders(),
+    );
+  }
+
+  static Future<http.Response> createPark(Map<String, dynamic> parkData) async {
+    return http.post(
+      Uri.parse('$baseUrl/parks'),
+      headers: _getHeaders(),
+      body: jsonEncode(parkData),
+    );
+  }
+
+  static Future<http.Response> updatePark(Long id, Map<String, dynamic> parkData) async {
+    return http.put(
+      Uri.parse('$baseUrl/parks/$id'),
+      headers: _getHeaders(),
+      body: jsonEncode(parkData),
+    );
+  }
+
+  static Future<http.Response> deletePark(Long id) async {
+    return http.delete(
+      Uri.parse('$baseUrl/parks/$id'),
+      headers: _getHeaders(),
+    );
+  }
+
   static Future<http.Response> getCollectiblesByFoodTruck(Long foodTruckId) async {
     return http.get(
       Uri.parse('$baseUrl/collectibles/foodtruck/$foodTruckId'),

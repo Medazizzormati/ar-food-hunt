@@ -7,10 +7,14 @@ class AppConstants {
   static const int connectionTimeout = 30000;
   static const int receiveTimeout = 30000;
   
+  // OneSignal Configuration
+  static const String oneSignalAppId = 'YOUR_ONESIGNAL_APP_ID';
+  
   // Storage Keys
   static const String tokenKey = 'auth_token';
   static const String userKey = 'user_data';
   static const String themeKey = 'theme_mode';
+  static const String selectedParkKey = 'selected_park';
   
   // Pagination
   static const int defaultPageSize = 20;

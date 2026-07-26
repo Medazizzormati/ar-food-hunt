@@ -31,6 +31,10 @@ public class FoodTruck {
     @Column(columnDefinition = "TEXT")
     private String description;
     
+    @ManyToOne
+    @JoinColumn(name = "park_id")
+    private Park park;
+    
     @OneToMany(mappedBy = "foodTruck", cascade = CascadeType.ALL)
     private Set<Collectible> collectibles = new HashSet<>();
     

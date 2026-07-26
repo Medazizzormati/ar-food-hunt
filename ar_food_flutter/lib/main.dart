@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
+import 'core/services/notification_service.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
 import 'features/explore/presentation/screens/explore_screen.dart';
@@ -10,7 +11,9 @@ import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/events/presentation/screens/events_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().initialize();
   runApp(const ARFoodApp());
 }
 

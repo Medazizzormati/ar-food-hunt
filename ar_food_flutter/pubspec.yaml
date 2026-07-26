@@ -37,6 +37,11 @@ dependencies:
   http: ^1.2.0
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
+  onesignal_flutter: ^5.1.2
+  flutter_local_notifications: ^16.3.2
+  ar_flutter_plugin: ^0.7.3
+  camera: ^0.10.5+5
+  geolocator: ^10.1.0
 
 dev_dependencies:
   flutter_test:

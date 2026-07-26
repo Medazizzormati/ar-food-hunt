@@ -235,16 +235,16 @@ ar_food/
 
 ```sql
 CREATE DATABASE ar_food_hunt;
-CREATE USER postgres WITH PASSWORD 'postgres';
+CREATE USER postgres WITH PASSWORD 'aziz';
 GRANT ALL PRIVILEGES ON DATABASE ar_food_hunt TO postgres;
 ```
 
 2. **Configure database connection** in `ar-food-backend/src/main/resources/application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/ar_food_hunt
+spring.datasource.url=jdbc:postgresql://localhost:5433/ar_food_hunt
 spring.datasource.username=postgres
-spring.datasource.password=postgres
+spring.datasource.password=aziz
 ```
 
 3. **Automatic Schema Initialization**

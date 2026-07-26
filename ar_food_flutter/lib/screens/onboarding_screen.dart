@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import '../theme/app_theme.dart';
 import '../main.dart';
 
@@ -18,19 +17,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingPage(
       title: 'Explore Food Trucks',
       description: 'Discover nearby food trucks using our interactive map. Find your favorite cuisines and explore the park like never before.',
-      lottieUrl: 'https://lottie.host/5e6c5e9c-7f8f-4e3a-9b8d-3c2e1d4f5a6e/your-animation.json',
+      icon: Icons.map_rounded,
       color: AppTheme.primary,
     ),
     OnboardingPage(
       title: 'Hunt & Collect',
       description: 'Scan AR food items, earn XP, and complete collections while walking through the park. Build your inventory and level up!',
-      lottieUrl: 'https://lottie.host/5e6c5e9c-7f8f-4e3a-9b8d-3c2e1d4f5a6e/your-animation.json',
+      icon: Icons.camera_alt_rounded,
       color: AppTheme.secondary,
     ),
     OnboardingPage(
       title: 'Earn Rewards',
       description: 'Unlock exclusive coupons, achievements, and discounts after completing missions. Redeem rewards for real-world benefits!',
-      lottieUrl: 'https://lottie.host/5e6c5e9c-7f8f-4e3a-9b8d-3c2e1d4f5a6e/your-animation.json',
+      icon: Icons.card_giftcard_rounded,
       color: AppTheme.tertiary,
     ),
   ];
@@ -178,21 +177,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Lottie Animation
-              SizedBox(
+              // Icon Animation
+              Container(
                 height: 250,
-                child: Lottie.network(
-                  page.lottieUrl,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Center(
-                      child: Icon(
-                        Icons.error_outline,
-                        size: 50,
-                        color: isDark ? AppTheme.darkTextMuted : AppTheme.lightTextMuted,
-                      ),
-                    );
-                  },
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      page.color.withOpacity(0.2),
+                      page.color.withOpacity(0.1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.all(32),
+                    decoration: BoxDecoration(
+                      color: page.color.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      page.icon,
+                      size: 120,
+                      color: page.color,
+                    ),
+                  ),
                 ),
               ),
 
@@ -232,13 +244,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 class OnboardingPage {
   final String title;
   final String description;
-  final String lottieUrl;
+  final IconData icon;
   final Color color;
 
   OnboardingPage({
     required this.title,
     required this.description,
-    required this.lottieUrl,
+    required this.icon,
     required this.color,
   });
 }

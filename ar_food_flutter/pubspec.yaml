@@ -41,7 +41,7 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   ar_flutter_plugin: ^0.7.3
   camera: ^0.10.5+5
-  geolocator: ^10.1.0
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:

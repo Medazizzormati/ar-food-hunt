@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../theme/app_theme.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -11,6 +12,8 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showScrollToTop = false;
+  List<ExploreItem> _exploreItems = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -20,6 +23,104 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _showScrollToTop = _scrollController.offset > 200;
       });
     });
+    _loadExploreItems();
+  }
+
+  Future<void> _loadExploreItems() async {
+    // Get current position
+    Position position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e) {
+      // Default position if location not available
+      position = const Position(
+        latitude: 40.7128,
+        longitude: -74.0060,
+        timestamp: null,
+        accuracy: 0.0,
+        altitude: 0.0,
+        altitudeAccuracy: 0.0,
+        heading: 0.0,
+        headingAccuracy: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
+    }
+
+    // Mock data - in real app, fetch from API
+    final mockFoodTrucks = [
+      {'id': 1, 'name': 'Burger Bliss', 'emoji': '🍔', 'lat': 40.7130, 'lon': -74.0065, 'type': 'food_truck', 'status': 'Active Event', 'statusColor': Colors.orange},
+      {'id': 2, 'name': 'Pizza Planet', 'emoji': '🍕', 'lat': 40.7140, 'lon': -74.0070, 'type': 'food_truck', 'status': 'Open', 'statusColor': Colors.green},
+      {'id': 3, 'name': 'Ice Cream Van', 'emoji': '🍦', 'lat': 40.7150, 'lon': -74.0080, 'type': 'food_truck', 'status': 'Special Drops', 'statusColor': Colors.teal},
+      {'id': 4, 'name': 'Taco Trek', 'emoji': '🌮', 'lat': 40.7160, 'lon': -74.0090, 'type': 'food_truck', 'status': 'Open', 'statusColor': Colors.purple},
+      {'id': 5, 'name': 'Donut Delight', 'emoji': '🍩', 'lat': 40.7170, 'lon': -74.0100, 'type': 'food_truck', 'status': 'Special Drops', 'statusColor': Colors.pink},
+      {'id': 6, 'name': 'BBQ Brothers', 'emoji': '🍖', 'lat': 40.7180, 'lon': -74.0110, 'type': 'food_truck', 'status': 'Active Event', 'statusColor': Colors.red},
+      {'id': 7, 'name': 'Smoothie Station', 'emoji': '🥤', 'lat': 40.7190, 'lon': -74.0120, 'type': 'food_truck', 'status': 'Open', 'statusColor': Colors.blue},
+    ];
+
+    final mockCollectibles = [
+      {'id': 101, 'name': 'Golden Burger', 'emoji': '🏆', 'lat': 40.7135, 'lon': -74.0075, 'type': 'collectible', 'status': 'Rare', 'statusColor': Colors.amber},
+      {'id': 102, 'name': 'Pizza Slice', 'emoji': '🍕', 'lat': 40.7145, 'lon': -74.0085, 'type': 'collectible', 'status': 'Common', 'statusColor': Colors.grey},
+      {'id': 103, 'name': 'Ice Cream Cone', 'emoji': '🍦', 'lat': 40.7155, 'lon': -74.0095, 'type': 'collectible', 'status': 'Legendary', 'statusColor': Colors.purple},
+      {'id': 104, 'name': 'Taco Shell', 'emoji': '🌮', 'lat': 40.7165, 'lon': -74.0105, 'type': 'collectible', 'status': 'Common', 'statusColor': Colors.grey},
+    ];
+
+    // Combine and calculate distances
+    final allItems = [...mockFoodTrucks, ...mockCollectibles];
+    
+    _exploreItems = allItems.map((item) {
+      final distance = _calculateDistance(
+        position.latitude,
+        position.longitude,
+        item['lat'] as double,
+        item['lon'] as double,
+      );
+      return ExploreItem(
+        id: item['id'] as int,
+        name: item['name'] as String,
+        emoji: item['emoji'] as String,
+        distance: distance,
+        type: item['type'] as String,
+        status: item['status'] as String,
+        statusColor: item['statusColor'] as Color,
+      );
+    }).toList();
+
+    // Sort by distance
+    _exploreItems.sort((a, b) => a.distance.compareTo(b.distance));
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371000; // meters
+    final double dLat = _toRadians(lat2 - lat1);
+    final double dLon = _toRadians(lon2 - lon1);
+    
+    final double a = 
+        (dLat / 2).sin() * (dLat / 2).sin() +
+        lat1.cos() * lat2.cos() * 
+        (dLon / 2).sin() * (dLon / 2).sin();
+    
+    final double c = 2 * (a.sqrt()).asin();
+    
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * (3.14159265359 / 180);
+  }
+
+  String _formatDistance(double meters) {
+    if (meters < 1000) {
+      return '${meters.round()}m';
+    } else {
+      return '${(meters / 1000).toStringAsFixed(1)}km';
+    }
   }
 
   @override
@@ -64,43 +165,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ),
           
-          // Map Pins (Mock)
-          const Positioned(
-            top: 200, left: 80,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/burger_truck.png',
-              emoji: '🍔',
-              name: 'Burger Bliss',
-              isEvent: true,
-            ),
-          ),
-          const Positioned(
-            top: 150, left: 240,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/pizza_truck.png',
-              emoji: '🍕',
-              name: 'Pizza Planet',
-              isEvent: false,
-            ),
-          ),
-          const Positioned(
-            top: 350, left: 180,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/ice_cream_truck.png',
-              emoji: '🍦',
-              name: 'Ice Cream Van',
-              isEvent: false,
-            ),
-          ),
-          const Positioned(
-            top: 380, left: 30,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/taco_truck.png',
-              emoji: '🌮',
-              name: 'Taco Trek',
-              isEvent: true,
-            ),
-          ),
+          // Map Pins (Mock - using first few items)
+          if (!_isLoading && _exploreItems.isNotEmpty)
+            ..._exploreItems.take(4).map((item) => Positioned(
+              top: 200 + (item.id % 4) * 50,
+              left: 80 + (item.id % 4) * 80,
+              child: AnimatedFoodTruckMarker(
+                assetPath: 'assets/images/${item.type == 'food_truck' ? 'burger_truck' : 'collectible'}.png',
+                emoji: item.emoji,
+                name: item.name,
+                isEvent: item.status.contains('Event'),
+              ),
+            )),
           
           // Bottom Sheet with List
           DraggableScrollableSheet(
@@ -126,21 +202,27 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Expanded(
-                      child: ListView(
-                        controller: scrollController,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        children: [
-                          _buildListTruck(context, 'Burger Bliss', '50m', '🍔', 'Active Event', Colors.orange),
-                          _buildListTruck(context, 'Pizza Planet', '120m', '🍕', 'Open', Colors.green),
-                          _buildListTruck(context, 'Ice Cream Van', '250m', '🍦', 'Special Drops', Colors.teal),
-                          _buildListTruck(context, 'Taco Trek', '180m', '🌮', 'Open', Colors.purple),
-                          _buildListTruck(context, 'Donut Delight', '320m', '🍩', 'Special Drops', Colors.pink),
-                          _buildListTruck(context, 'BBQ Brothers', '450m', '🍖', 'Active Event', Colors.red),
-                          _buildListTruck(context, 'Smoothie Station', '280m', '🥤', 'Open', Colors.blue),
-                        ],
+                    if (_isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: _exploreItems.length,
+                          itemBuilder: (context, index) {
+                            final item = _exploreItems[index];
+                            return _buildListTruck(
+                              context,
+                              item.name,
+                              _formatDistance(item.distance),
+                              item.emoji,
+                              item.status,
+                              item.statusColor,
+                            );
+                          },
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );
@@ -241,6 +323,26 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
     );
   }
+}
+
+class ExploreItem {
+  final int id;
+  final String name;
+  final String emoji;
+  final double distance;
+  final String type;
+  final String status;
+  final Color statusColor;
+
+  ExploreItem({
+    required this.id,
+    required this.name,
+    required this.emoji,
+    required this.distance,
+    required this.type,
+    required this.status,
+    required this.statusColor,
+  });
 }
 
 class AnimatedFoodTruckMarker extends StatefulWidget {

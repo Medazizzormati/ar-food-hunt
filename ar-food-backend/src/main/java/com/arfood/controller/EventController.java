@@ -53,7 +53,7 @@ public class EventController {
     }
     
     @PostMapping
-    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Auditable
     public ResponseEntity<EventDto> createEvent(@Valid @RequestBody EventDto eventDto) {
         Event event = eventMapper.toEntity(eventDto);
@@ -62,7 +62,7 @@ public class EventController {
     }
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Auditable
     public ResponseEntity<EventDto> updateEvent(@PathVariable Long id, @Valid @RequestBody EventDto eventDto) {
         Event existingEvent = eventService.getEventById(id)
@@ -75,7 +75,7 @@ public class EventController {
     }
     
     @PostMapping("/{id}/activate")
-    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Auditable
     public ResponseEntity<EventDto> activateEvent(@PathVariable Long id) {
         Event event = eventService.activateEvent(id);
@@ -83,7 +83,7 @@ public class EventController {
     }
     
     @PostMapping("/{id}/deactivate")
-    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Auditable
     public ResponseEntity<EventDto> deactivateEvent(@PathVariable Long id) {
         Event event = eventService.deactivateEvent(id);
@@ -91,7 +91,7 @@ public class EventController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MODERATOR', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Auditable
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);

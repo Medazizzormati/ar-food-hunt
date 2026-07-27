@@ -46,11 +46,4 @@ public class NotificationScheduler {
             log.info("Sent notification for event ending soon: {}", event.getName());
         }
     }
-
-    @Scheduled(cron = "0 0 * * * ?") // Every hour
-    public void checkCollectibleSpawnNotifications() {
-        // This would check for collectibles that are about to spawn
-        // Implementation depends on collectible spawn logic
-        log.info("Checking collectible spawn notifications");
-    }
 }

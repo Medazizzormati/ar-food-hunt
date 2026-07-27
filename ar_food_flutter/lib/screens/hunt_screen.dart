@@ -33,12 +33,15 @@ class _HuntScreenState extends State<HuntScreen> with SingleTickerProviderStateM
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image (Parking lot with trucks)
+          // Background Gradient
           Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1565123409695-3756158ac242?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'),
-                fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: isDark 
+                  ? [const Color(0xFF1a1a2e), const Color(0xFF16213e)]
+                  : [const Color(0xFF87CEEB), const Color(0xFFE0F7FA)],
               ),
             ),
           ),

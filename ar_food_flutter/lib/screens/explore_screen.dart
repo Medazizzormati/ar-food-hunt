@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../theme/app_theme.dart';
@@ -35,10 +36,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
       );
     } catch (e) {
       // Default position if location not available
-      position = const Position(
+      position = Position(
         latitude: 40.7128,
         longitude: -74.0060,
-        timestamp: null,
+        timestamp: DateTime.now(),
         accuracy: 0.0,
         altitude: 0.0,
         altitudeAccuracy: 0.0,
@@ -102,17 +103,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final double dLon = _toRadians(lon2 - lon1);
     
     final double a = 
-        (dLat / 2).sin() * (dLat / 2).sin() +
-        lat1.cos() * lat2.cos() * 
-        (dLon / 2).sin() * (dLon / 2).sin();
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) * 
+        math.sin(dLon / 2) * math.sin(dLon / 2);
     
-    final double c = 2 * (a.sqrt()).asin();
+    final double c = 2 * math.asin(math.sqrt(a));
     
     return earthRadius * c;
   }
 
   double _toRadians(double degrees) {
-    return degrees * (3.14159265359 / 180);
+    return degrees * (math.pi / 180);
   }
 
   String _formatDistance(double meters) {
@@ -156,11 +157,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
           // Fake Map Background
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              image: const DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'),
-                fit: BoxFit.cover,
-                opacity: 0.3,
+              color: isDark ? const Color(0xFF1a1a2e) : const Color(0xFFf5f5f5),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: isDark 
+                  ? [const Color(0xFF1a1a2e), const Color(0xFF16213e)]
+                  : [const Color(0xFFf5f5f5), const Color(0xFFe0e0e0)],
               ),
             ),
           ),

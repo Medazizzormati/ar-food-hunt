@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
-import '../main.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,6 +16,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _language = 'English';
   String _timezone = 'UTC';
   String _itemsPerPage = '25';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notifications = prefs.getBool('notifications') ?? true;
+      _emailAlerts = prefs.getBool('emailAlerts') ?? false;
+      _autoRefresh = prefs.getBool('autoRefresh') ?? true;
+      _language = prefs.getString('language') ?? 'English';
+      _timezone = prefs.getString('timezone') ?? 'UTC';
+      _itemsPerPage = prefs.getString('itemsPerPage') ?? '25';
+    });
+  }
+
+  Future<void> _saveSetting(String key, dynamic value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value is bool) {
+      await prefs.setBool(key, value);
+    } else if (value is String) {
+      await prefs.setString(key, value);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Toggle dark theme for the app',
             isDark,
             (value) {
-              ARFoodApp.themeNotifier.value = value ? ThemeMode.dark : ThemeMode.light;
+              // Theme toggle functionality to be implemented
             },
           ),
           const SizedBox(height: 24),
@@ -44,13 +71,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Push Notifications',
             'Receive notifications for important events',
             _notifications,
-            (value) => setState(() => _notifications = value),
+            (value) {
+              setState(() => _notifications = value);
+              _saveSetting('notifications', value);
+            },
           ),
           _buildSwitchTile(
             'Email Alerts',
             'Receive email summaries of activities',
             _emailAlerts,
-            (value) => setState(() => _emailAlerts = value),
+            (value) {
+              setState(() => _emailAlerts = value);
+              _saveSetting('emailAlerts', value);
+            },
           ),
           const SizedBox(height: 24),
           
@@ -60,14 +93,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Select your preferred language',
             _language,
             ['English', 'French', 'Spanish', 'German', 'Arabic'],
-            (value) => setState(() => _language = value),
+            (value) {
+              setState(() => _language = value);
+              _saveSetting('language', value);
+            },
           ),
           _buildSelectTile(
             'Timezone',
             'Set your timezone for reports',
             _timezone,
             ['UTC', 'EST', 'PST', 'CET', 'GMT'],
-            (value) => setState(() => _timezone = value),
+            (value) {
+              setState(() => _timezone = value);
+              _saveSetting('timezone', value);
+            },
           ),
           const SizedBox(height: 24),
           
@@ -77,7 +116,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Number of items to display in lists',
             _itemsPerPage,
             ['10', '25', '50', '100'],
-            (value) => setState(() => _itemsPerPage = value),
+            (value) {
+              setState(() => _itemsPerPage = value);
+              _saveSetting('itemsPerPage', value);
+            },
           ),
           const SizedBox(height: 24),
           
@@ -86,7 +128,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Auto Refresh',
             'Automatically refresh data every 30 seconds',
             _autoRefresh,
-            (value) => setState(() => _autoRefresh = value),
+            (value) {
+              setState(() => _autoRefresh = value);
+              _saveSetting('autoRefresh', value);
+            },
           ),
           _buildActionTile(
             'Clear Cache',

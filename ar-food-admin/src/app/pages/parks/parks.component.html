@@ -1,0 +1,165 @@
+<div class="parks-container">
+  <div class="header">
+    <h1>Parks Management</h1>
+    <button class="btn-primary" (click)="openAddDialog()">
+      <span class="material-icons">add</span>
+      Add Park
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading parks...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <span class="material-icons">error_outline</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error" class="parks-grid">
+    <div *ngFor="let park of parks" class="park-card" [class.inactive]="!park.active">
+      <div class="park-image">
+        <img *ngIf="park.imageUrl" [src]="park.imageUrl" [alt]="park.name">
+        <div *ngIf="!park.imageUrl" class="placeholder">
+          <span class="material-icons">location_city</span>
+        </div>
+        <div class="status-badge" [class.active]="park.active">
+          {{ park.active ? 'Active' : 'Inactive' }}
+        </div>
+      </div>
+      
+      <div class="park-info">
+        <h3>{{ park.name }}</h3>
+        <p class="location">
+          <span class="material-icons">place</span>
+          {{ park.location }}
+        </p>
+        <p *ngIf="park.description" class="description">{{ park.description }}</p>
+        
+        <div *ngIf="park.latitude && park.longitude" class="coordinates">
+          <span class="material-icons">my_location</span>
+          {{ park.latitude.toFixed(4) }}, {{ park.longitude.toFixed(4) }}
+        </div>
+      </div>
+      
+      <div class="park-actions">
+        <button class="btn-icon" (click)="toggleParkStatus(park)" [title]="park.active ? 'Deactivate' : 'Activate'">
+          <span class="material-icons">{{ park.active ? 'toggle_on' : 'toggle_off' }}</span>
+        </button>
+        <button class="btn-icon" (click)="openEditDialog(park)" title="Edit">
+          <span class="material-icons">edit</span>
+        </button>
+        <button class="btn-icon btn-danger" (click)="deletePark(park.id)" title="Delete">
+          <span class="material-icons">delete</span>
+        </button>
+      </div>
+    </div>
+    
+    <div *ngIf="parks.length === 0" class="empty-state">
+      <span class="material-icons">location_city</span>
+      <p>No parks found</p>
+      <button class="btn-primary" (click)="openAddDialog()">Add First Park</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Park Dialog -->
+<div *ngIf="showAddDialog" class="dialog-overlay" (click)="closeDialogs()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h2>Add New Park</h2>
+    <form (ngSubmit)="savePark()">
+      <div class="form-group">
+        <label>Park Name *</label>
+        <input type="text" [(ngModel)]="selectedPark.name" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Location *</label>
+        <input type="text" [(ngModel)]="selectedPark.location" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="selectedPark.description" rows="3"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Latitude</label>
+          <input type="number" step="any" [(ngModel)]="selectedPark.latitude">
+        </div>
+        
+        <div class="form-group">
+          <label>Longitude</label>
+          <input type="number" step="any" [(ngModel)]="selectedPark.longitude">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="url" [(ngModel)]="selectedPark.imageUrl">
+      </div>
+      
+      <div class="form-group checkbox">
+        <input type="checkbox" [(ngModel)]="selectedPark.active" id="parkActive">
+        <label for="parkActive">Active</label>
+      </div>
+      
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="closeDialogs()">Cancel</button>
+        <button type="submit" class="btn-primary">Save Park</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Park Dialog -->
+<div *ngIf="showEditDialog" class="dialog-overlay" (click)="closeDialogs()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <h2>Edit Park</h2>
+    <form (ngSubmit)="savePark()">
+      <div class="form-group">
+        <label>Park Name *</label>
+        <input type="text" [(ngModel)]="selectedPark.name" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Location *</label>
+        <input type="text" [(ngModel)]="selectedPark.location" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="selectedPark.description" rows="3"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Latitude</label>
+          <input type="number" step="any" [(ngModel)]="selectedPark.latitude">
+        </div>
+        
+        <div class="form-group">
+          <label>Longitude</label>
+          <input type="number" step="any" [(ngModel)]="selectedPark.longitude">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="url" [(ngModel)]="selectedPark.imageUrl">
+      </div>
+      
+      <div class="form-group checkbox">
+        <input type="checkbox" [(ngModel)]="selectedPark.active" id="parkActiveEdit">
+        <label for="parkActiveEdit">Active</label>
+      </div>
+      
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="closeDialogs()">Cancel</button>
+        <button type="submit" class="btn-primary">Update Park</button>
+      </div>
+    </form>
+  </div>
+</div>

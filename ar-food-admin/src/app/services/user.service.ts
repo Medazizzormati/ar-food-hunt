@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ApiService } from './api.service';
 
 export interface User {
   id: string;
@@ -14,35 +15,63 @@ export interface User {
   providedIn: 'root'
 })
 export class UserService {
-  private initialUsers: User[] = [
-    { id: '1', name: 'Alex Hunter', level: 42, role: 'Player', status: 'Active', joined: 'Oct 12, 2025' },
-    { id: '2', name: 'Maria Garcia', level: 15, role: 'Player', status: 'Active', joined: 'Nov 01, 2025' },
-    { id: '3', name: 'John Doe', level: 8, role: 'Player', status: 'Suspended', joined: 'Dec 05, 2025' },
-    { id: '4', name: 'Sarah Connor', level: 99, role: 'Admin', status: 'Active', joined: 'Jan 01, 2024' },
-    { id: '5', name: 'FoodieMaster99', level: 27, role: 'Player', status: 'Active', joined: 'Feb 14, 2026' }
-  ];
-
-  private usersSubject = new BehaviorSubject<User[]>(this.initialUsers);
+  private usersSubject = new BehaviorSubject<User[]>([]);
   users$ = this.usersSubject.asObservable();
 
-  constructor() { }
+  constructor(private apiService: ApiService) {
+    this.fetchUsers();
+  }
+
+  fetchUsers() {
+    this.apiService.getUsers().subscribe((data: any[]) => {
+      const users: User[] = data.map(u => ({
+        id: u.id ? u.id.toString() : '',
+        name: u.username || u.name || '',
+        level: u.level || 1,
+        role: u.role || 'Player',
+        status: u.status || 'Active',
+        joined: u.createdAt || u.joined || new Date().toISOString()
+      }));
+      this.usersSubject.next(users);
+    });
+  }
 
   getUsers(): User[] {
     return this.usersSubject.value;
   }
 
   addUser(user: Omit<User, 'id'>) {
-    const newUser = { ...user, id: Math.random().toString(36).substring(2, 9) };
-    this.usersSubject.next([...this.getUsers(), newUser]);
+    const payload = {
+      username: user.name,
+      email: `${user.name.replace(/\s+/g, '').toLowerCase()}@example.com`,
+      password: 'password123',
+      role: user.role,
+      level: user.level,
+      status: user.status
+    };
+    
+    // Fallback to register since apiService has no create user (just register)
+    this.apiService.register(payload.username, payload.email, payload.password).subscribe((newUser: any) => {
+      const formattedUser = { ...user, id: newUser.id ? newUser.id.toString() : Math.random().toString(36).substring(2, 9), joined: new Date().toISOString() };
+      this.usersSubject.next([...this.getUsers(), formattedUser]);
+    });
   }
 
   updateUser(updatedUser: User) {
-    const users = this.getUsers().map(u => u.id === updatedUser.id ? updatedUser : u);
-    this.usersSubject.next(users);
+    const payload = {
+      ...updatedUser,
+      username: updatedUser.name
+    };
+    this.apiService.updateUser(Number(updatedUser.id), payload).subscribe(() => {
+      const users = this.getUsers().map(u => u.id === updatedUser.id ? updatedUser : u);
+      this.usersSubject.next(users);
+    });
   }
 
   deleteUser(id: string) {
-    const users = this.getUsers().filter(u => u.id !== id);
-    this.usersSubject.next(users);
+    this.apiService.deleteUser(Number(id)).subscribe(() => {
+      const users = this.getUsers().filter(u => u.id !== id);
+      this.usersSubject.next(users);
+    });
   }
 }

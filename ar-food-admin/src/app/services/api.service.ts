@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = 'http://localhost:8082/api';
   
   constructor(private http: HttpClient) {}
   
@@ -209,5 +209,60 @@ export class ApiService {
   
   deleteCollectible(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/collectibles/${id}`, { headers: this.getHeaders() });
+  }
+  
+  // Parks endpoints
+  getParks(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/parks`, { headers: this.getHeaders() });
+  }
+  
+  getParkById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/parks/${id}`, { headers: this.getHeaders() });
+  }
+  
+  createPark(parkData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/parks`, parkData, { headers: this.getHeaders() });
+  }
+  
+  updatePark(id: number, parkData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/parks/${id}`, parkData, { headers: this.getHeaders() });
+  }
+  
+  deletePark(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/parks/${id}`, { headers: this.getHeaders() });
+  }
+  
+  // Item endpoints
+  getItems(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/items`, { headers: this.getHeaders() });
+  }
+  
+  createItem(itemData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/items`, itemData, { headers: this.getHeaders() });
+  }
+  
+  updateItem(id: number, itemData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/items/${id}`, itemData, { headers: this.getHeaders() });
+  }
+  
+  deleteItem(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/items/${id}`, { headers: this.getHeaders() });
+  }
+  
+  // Support endpoints
+  getTickets(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/support/tickets`, { headers: this.getHeaders() });
+  }
+  
+  createTicket(ticketData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/support/tickets`, ticketData, { headers: this.getHeaders() });
+  }
+  
+  updateTicket(id: number, ticketData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/support/tickets/${id}`, ticketData, { headers: this.getHeaders() });
+  }
+  
+  deleteTicket(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/support/tickets/${id}`, { headers: this.getHeaders() });
   }
 }

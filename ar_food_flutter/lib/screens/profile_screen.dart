@@ -168,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: isDark,
                       activeColor: AppTheme.primary,
                       onChanged: (value) {
-                        ARFoodApp.themeNotifier.value = value ? ThemeMode.dark : ThemeMode.light;
+                        // Theme toggle functionality to be implemented
                       },
                     ),
                   ),

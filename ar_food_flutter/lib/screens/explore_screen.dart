@@ -1,5 +1,11 @@
+import 'dart:math' as math;
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../theme/app_theme.dart';
+import '../services/api_service.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -11,6 +17,9 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showScrollToTop = false;
+  List<ExploreItem> _exploreItems = [];
+  bool _isLoading = true;
+  Position? _currentPosition;
 
   @override
   void initState() {
@@ -20,6 +29,126 @@ class _ExploreScreenState extends State<ExploreScreen> {
         _showScrollToTop = _scrollController.offset > 200;
       });
     });
+    _loadExploreItems();
+  }
+
+  Future<void> _loadExploreItems() async {
+    // Get current position
+    Position position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e) {
+      // Default position if location not available
+      position = Position(
+        latitude: 40.7128,
+        longitude: -74.0060,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        altitudeAccuracy: 0.0,
+        heading: 0.0,
+        headingAccuracy: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
+    }
+    _currentPosition = position;
+
+    List<Map<String, dynamic>> allItems = [];
+    
+    try {
+      final foodTrucksRes = await ApiService.getFoodTrucks();
+      if (foodTrucksRes.statusCode == 200) {
+        final trucks = jsonDecode(foodTrucksRes.body) as List;
+        for (var t in trucks) {
+          allItems.add({
+            'id': t['id'] ?? 0,
+            'name': t['name'] ?? 'Food Truck',
+            'emoji': '🍔',
+            'lat': (t['latitude'] ?? 0.0).toDouble(),
+            'lon': (t['longitude'] ?? 0.0).toDouble(),
+            'type': 'food_truck',
+            'status': 'Open',
+            'statusColor': Colors.green,
+          });
+        }
+      }
+
+      final collectiblesRes = await ApiService.getCollectibles();
+      if (collectiblesRes.statusCode == 200) {
+        final coll = jsonDecode(collectiblesRes.body) as List;
+        for (var c in coll) {
+          allItems.add({
+            'id': c['id'] ?? 0,
+            'name': c['name'] ?? 'Collectible',
+            'emoji': c['type'] == 'COIN' ? '🪙' : '🏆',
+            'lat': (c['latitude'] ?? 0.0).toDouble(),
+            'lon': (c['longitude'] ?? 0.0).toDouble(),
+            'type': 'collectible',
+            'status': 'Available',
+            'statusColor': Colors.amber,
+          });
+        }
+      }
+    } catch (e) {
+      // Handle error or fallback if needed
+    }
+
+    _exploreItems = allItems.map((item) {
+      final distance = _calculateDistance(
+        position.latitude,
+        position.longitude,
+        item['lat'] as double,
+        item['lon'] as double,
+      );
+      return ExploreItem(
+        id: item['id'] as int,
+        name: item['name'] as String,
+        emoji: item['emoji'] as String,
+        distance: distance,
+        type: item['type'] as String,
+        status: item['status'] as String,
+        statusColor: item['statusColor'] as Color,
+        lat: item['lat'] as double,
+        lon: item['lon'] as double,
+      );
+    }).toList();
+
+    // Sort by distance
+    _exploreItems.sort((a, b) => a.distance.compareTo(b.distance));
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371000; // meters
+    final double dLat = _toRadians(lat2 - lat1);
+    final double dLon = _toRadians(lon2 - lon1);
+    
+    final double a = 
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) * 
+        math.sin(dLon / 2) * math.sin(dLon / 2);
+    
+    final double c = 2 * math.asin(math.sqrt(a));
+    
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * (math.pi / 180);
+  }
+
+  String _formatDistance(double meters) {
+    if (meters < 1000) {
+      return '${meters.round()}m';
+    } else {
+      return '${(meters / 1000).toStringAsFixed(1)}km';
+    }
   }
 
   @override
@@ -52,55 +181,42 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
       body: Stack(
         children: [
-          // Fake Map Background
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              image: const DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'),
-                fit: BoxFit.cover,
-                opacity: 0.3,
+          if (!_isLoading && _currentPosition != null)
+            FlutterMap(
+              options: MapOptions(
+                initialCenter: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                initialZoom: 15.0,
               ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.ar_food',
+                ),
+                MarkerLayer(
+                  markers: _exploreItems.map((item) {
+                    return Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: LatLng(item.lat, item.lon),
+                      child: AnimatedFoodTruckMarker(
+                        assetPath: 'assets/images/${item.type == 'food_truck' ? 'burger_truck' : 'collectible'}.png',
+                        emoji: item.emoji,
+                        name: item.name,
+                        isEvent: item.status.contains('Event'),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            )
+          else
+            Container(
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1a1a2e) : const Color(0xFFf5f5f5),
+              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
-          ),
-          
-          // Map Pins (Mock)
-          const Positioned(
-            top: 200, left: 80,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/burger_truck.png',
-              emoji: '🍔',
-              name: 'Burger Bliss',
-              isEvent: true,
-            ),
-          ),
-          const Positioned(
-            top: 150, left: 240,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/pizza_truck.png',
-              emoji: '🍕',
-              name: 'Pizza Planet',
-              isEvent: false,
-            ),
-          ),
-          const Positioned(
-            top: 350, left: 180,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/ice_cream_truck.png',
-              emoji: '🍦',
-              name: 'Ice Cream Van',
-              isEvent: false,
-            ),
-          ),
-          const Positioned(
-            top: 380, left: 30,
-            child: AnimatedFoodTruckMarker(
-              assetPath: 'assets/images/taco_truck.png',
-              emoji: '🌮',
-              name: 'Taco Trek',
-              isEvent: true,
-            ),
-          ),
+
           
           // Bottom Sheet with List
           DraggableScrollableSheet(
@@ -126,21 +242,27 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Expanded(
-                      child: ListView(
-                        controller: scrollController,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        children: [
-                          _buildListTruck(context, 'Burger Bliss', '50m', '🍔', 'Active Event', Colors.orange),
-                          _buildListTruck(context, 'Pizza Planet', '120m', '🍕', 'Open', Colors.green),
-                          _buildListTruck(context, 'Ice Cream Van', '250m', '🍦', 'Special Drops', Colors.teal),
-                          _buildListTruck(context, 'Taco Trek', '180m', '🌮', 'Open', Colors.purple),
-                          _buildListTruck(context, 'Donut Delight', '320m', '🍩', 'Special Drops', Colors.pink),
-                          _buildListTruck(context, 'BBQ Brothers', '450m', '🍖', 'Active Event', Colors.red),
-                          _buildListTruck(context, 'Smoothie Station', '280m', '🥤', 'Open', Colors.blue),
-                        ],
+                    if (_isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: _exploreItems.length,
+                          itemBuilder: (context, index) {
+                            final item = _exploreItems[index];
+                            return _buildListTruck(
+                              context,
+                              item.name,
+                              _formatDistance(item.distance),
+                              item.emoji,
+                              item.status,
+                              item.statusColor,
+                            );
+                          },
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );
@@ -241,6 +363,30 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
     );
   }
+}
+
+class ExploreItem {
+  final int id;
+  final String name;
+  final String emoji;
+  final double distance;
+  final String type;
+  final String status;
+  final Color statusColor;
+  final double lat;
+  final double lon;
+
+  ExploreItem({
+    required this.id,
+    required this.name,
+    required this.emoji,
+    required this.distance,
+    required this.type,
+    required this.status,
+    required this.statusColor,
+    required this.lat,
+    required this.lon,
+  });
 }
 
 class AnimatedFoodTruckMarker extends StatefulWidget {

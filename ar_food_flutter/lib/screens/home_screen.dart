@@ -1,9 +1,99 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import 'notifications_screen.dart';
+import '../services/api_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _nearbyTrucks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371000;
+    final double dLat = (lat2 - lat1) * (math.pi / 180);
+    final double dLon = (lon2 - lon1) * (math.pi / 180);
+    
+    final double a = 
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(lat1 * (math.pi / 180)) * math.cos(lat2 * (math.pi / 180)) * 
+        math.sin(dLon / 2) * math.sin(dLon / 2);
+    
+    final double c = 2 * math.asin(math.sqrt(a));
+    return earthRadius * c;
+  }
+
+  String _formatDistance(double meters) {
+    if (meters < 1000) {
+      return '${meters.round()}m away';
+    } else {
+      return '${(meters / 1000).toStringAsFixed(1)}km away';
+    }
+  }
+
+  Future<void> _loadData() async {
+    Position? position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    } catch (e) {
+      position = Position(
+        latitude: 40.7128,
+        longitude: -74.0060,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        altitudeAccuracy: 0.0,
+        heading: 0.0,
+        headingAccuracy: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
+    }
+
+    try {
+      final res = await ApiService.getFoodTrucks();
+      if (res.statusCode == 200) {
+        final trucks = jsonDecode(res.body) as List;
+        final formattedTrucks = trucks.map((t) {
+          final lat = (t['latitude'] ?? 0.0).toDouble();
+          final lon = (t['longitude'] ?? 0.0).toDouble();
+          final distance = _calculateDistance(position!.latitude, position.longitude, lat, lon);
+          
+          return {
+            'name': t['name'] ?? 'Food Truck',
+            'distanceVal': distance,
+            'distance': _formatDistance(distance),
+            'emoji': '🍔',
+            'isEvent': (t['status'] ?? '') == 'Active Event'
+          };
+        }).toList();
+
+        formattedTrucks.sort((a, b) => (a['distanceVal'] as double).compareTo(b['distanceVal'] as double));
+        _nearbyTrucks = formattedTrucks.take(2).toList();
+      }
+    } catch (e) {
+      //
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +136,9 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
+      body: _isLoading 
+        ? const Center(child: CircularProgressIndicator()) 
+        : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,8 +209,19 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
             
             // Nearby Trucks
-            _buildTruckCard(context, 'Burger Bliss', '50m away', '🍔', true),
-            _buildTruckCard(context, 'Taco Trek', '120m away', '🌮', false),
+            ..._nearbyTrucks.map((t) => _buildTruckCard(
+              context, 
+              t['name'] as String, 
+              t['distance'] as String, 
+              t['emoji'] as String, 
+              t['isEvent'] as bool
+            )),
+            
+            if (_nearbyTrucks.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('No food trucks found nearby.'),
+              )
           ],
         ),
       ),
